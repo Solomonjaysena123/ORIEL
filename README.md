@@ -140,3 +140,9 @@ Historical snapshots are retained for traceability. New development continues in
 ## License
 
 See [LICENSE](LICENSE) for the repository license terms.
+
+## Packaged release artifacts
+
+Verified Python wheels are stored in `release-assets/` for preserved source snapshots: **0.1.0–0.7.0 and 0.8.1**. The current **0.8.1 VS Code extension** is included as a `.vsix` package.
+
+Versions **0.7.1–0.8.0** are represented in the integrated changelog, but exact standalone source snapshots were not preserved; binary packages for those versions are intentionally not fabricated. See [`docs/RELEASE_ARTIFACT_MATRIX.md`](docs/RELEASE_ARTIFACT_MATRIX.md).
