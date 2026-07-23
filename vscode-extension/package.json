@@ -1,0 +1,156 @@
+{
+  "name": "oriel-language-support",
+  "displayName": "Oriel Language Support",
+  "description": "ORIEL 0.8.1 language server, diagnostics, completion, navigation and debugging tools",
+  "version": "0.8.1",
+  "publisher": "aryalabs",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:oriel"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "oriel",
+        "aliases": [
+          "Oriel",
+          "oriel"
+        ],
+        "extensions": [
+          ".orl"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./images/oriel-light.svg",
+          "dark": "./images/oriel-dark.svg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "oriel",
+        "scopeName": "source.oriel",
+        "path": "./syntaxes/oriel.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "oriel",
+        "path": "./snippets/oriel.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "oriel.runFile",
+        "title": "ORIEL: Run Current File"
+      },
+      {
+        "command": "oriel.checkFile",
+        "title": "ORIEL: Check Current File"
+      },
+      {
+        "command": "oriel.formatFile",
+        "title": "ORIEL: Format Current File"
+      },
+      {
+        "command": "oriel.testProject",
+        "title": "ORIEL: Test Project"
+      },
+      {
+        "command": "oriel.buildProject",
+        "title": "ORIEL: Build Project"
+      },
+      {
+        "command": "oriel.newProject",
+        "title": "ORIEL: Create New Project"
+      },
+      {
+        "command": "oriel.installPackages",
+        "title": "ORIEL: Install Packages"
+      },
+      {
+        "command": "oriel.listPackages",
+        "title": "ORIEL: List Available Packages"
+      },
+      {
+        "command": "oriel.databaseSchema",
+        "title": "Oriel: Show Database Schema"
+      },
+      {
+        "command": "oriel.databaseMigrate",
+        "title": "Oriel: Migrate Database"
+      },
+      {
+        "command": "oriel.generateOpenApi",
+        "title": "Oriel: Generate OpenAPI Document"
+      },
+      {
+        "command": "oriel.compileFile",
+        "title": "ORIEL: Compile Current File"
+      },
+      {
+        "command": "oriel.profileFile",
+        "title": "ORIEL: Profile Current File"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "oriel.runFile",
+          "when": "resourceLangId == oriel",
+          "group": "navigation@1"
+        },
+        {
+          "command": "oriel.checkFile",
+          "when": "resourceLangId == oriel",
+          "group": "navigation@2"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "oriel.runFile",
+          "when": "resourceLangId == oriel",
+          "group": "navigation@1"
+        },
+        {
+          "command": "oriel.checkFile",
+          "when": "resourceLangId == oriel",
+          "group": "navigation@2"
+        },
+        {
+          "command": "oriel.formatFile",
+          "when": "resourceLangId == oriel",
+          "group": "navigation@3"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "oriel.testProject",
+          "when": "resourceScheme == file",
+          "group": "navigation@1"
+        },
+        {
+          "command": "oriel.buildProject",
+          "when": "resourceScheme == file",
+          "group": "navigation@2"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.2.1"
+  },
+  "scripts": {
+    "test": "node -e \"require('./extension.js')\"",
+    "package": "vsce package"
+  }
+}

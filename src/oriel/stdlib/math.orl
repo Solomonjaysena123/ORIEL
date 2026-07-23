@@ -1,0 +1,7 @@
+// ORIEL math helpers
+public fn square(value: Number) -> Number { return value * value }
+public fn clamp(value: Number, minimum: Number, maximum: Number) -> Number {
+    if value < minimum { return minimum }
+    if value > maximum { return maximum }
+    return value
+}

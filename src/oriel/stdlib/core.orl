@@ -1,0 +1,3 @@
+// ORIEL core helpers
+public fn identity(value: Any) -> Any { return value }
+public fn is_empty(value: Any) -> Bool { return len(value) == 0 }

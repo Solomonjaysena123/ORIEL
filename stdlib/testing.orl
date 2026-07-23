@@ -1,0 +1,7 @@
+// ORIEL testing helpers
+public fn assert_true(condition: Bool, message: Text) {
+    if !condition { print("FAIL: " + message) }
+}
+public fn assert_equal(actual: Any, expected: Any, message: Text) {
+    if actual != expected { print("FAIL: " + message) }
+}

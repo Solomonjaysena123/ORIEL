@@ -1,0 +1,4 @@
+// ORIEL logging helpers
+public fn log_info(message: Text) { print("INFO: " + message) }
+public fn log_warning(message: Text) { print("WARNING: " + message) }
+public fn log_error(message: Text) { print("ERROR: " + message) }

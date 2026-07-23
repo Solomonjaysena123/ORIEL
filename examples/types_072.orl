@@ -1,0 +1,11 @@
+// ORIEL 0.7.2 static typing example
+let scores: List[Int] = [72, 88, 95]
+let first: Int = scores[0]
+let nickname: Text? = none
+
+fn average(total: Int, count: Int) -> Float {
+    return total / count
+}
+
+print(first)
+print(average(255, 3))

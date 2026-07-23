@@ -1,0 +1,8 @@
+use oriel.text
+use oriel.math
+
+fn main() {
+    let name: Text = "ORIEL"
+    print(text_length(name))
+    print(square(6))
+}

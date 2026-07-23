@@ -1,0 +1,3 @@
+// ORIEL JSON helpers
+public fn to_json(value: Any) -> Text { return json_encode(value) }
+public fn from_json(value: Text) -> Any { return json_decode(value) }

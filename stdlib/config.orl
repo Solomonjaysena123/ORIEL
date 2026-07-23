@@ -1,0 +1,2 @@
+// ORIEL configuration helpers
+public fn environment(name: Text) -> Any { return env(name) }

@@ -1,0 +1,2 @@
+// ORIEL time helpers
+public fn unix_time() -> Number { return clock() }

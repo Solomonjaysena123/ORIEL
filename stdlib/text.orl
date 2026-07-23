@@ -1,0 +1,3 @@
+// ORIEL text helpers
+public fn text_length(value: Text) -> Int { return len(value) }
+public fn text_is_empty(value: Text) -> Bool { return len(value) == 0 }

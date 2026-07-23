@@ -1,0 +1,3 @@
+// ORIEL file helpers
+public fn load_text(path: Text) -> Text { return read_file(path) }
+public fn save_text(path: Text, content: Text) { write_file(path, content) }

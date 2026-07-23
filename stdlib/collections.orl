@@ -1,0 +1,3 @@
+// ORIEL collection helpers
+public fn collection_size(value: Any) -> Int { return len(value) }
+public fn collection_is_empty(value: Any) -> Bool { return len(value) == 0 }
