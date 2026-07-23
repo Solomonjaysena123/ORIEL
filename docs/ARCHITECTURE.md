@@ -1,39 +1,62 @@
 # ORIEL Open-Source Architecture
 
-```text
-Developer Experience
-VS Code Extension | CLI | REPL | Formatter | Tests | Documentation
-                          |
-Language Services
-LSP | Project Manager | Package Manager | Build Manager | Diagnostics
-                          |
-Compiler Frontend
-Source Manager -> Lexer -> Parser -> AST -> Semantic Analysis -> Type Checker
-                          |
-Intermediate Representation
-Typed AST -> ORIEL IR -> Optimizer -> Bytecode Generator
-                          |
-Runtime System
-Virtual Machine | Interpreter | Memory | Exceptions | Modules | Native Bridge
-                          |
-Standard Library
-Core | Text | Math | Collections | Files | JSON | Time | Network | Testing
-                          |
-Frameworks
-API | Database | Web | Desktop | Mobile | Data | AI | Cloud
-```
+The architecture below replaces the previous text-only architecture diagram and represents the complete ORIEL engineering direction through the 0.8.1 baseline.
+
+![ORIEL Open-Source Architecture](ORIEL_OPEN_SOURCE_ARCHITECTURE.png)
+
+## Architecture layers
+
+### Developer experience
+
+The CLI, Language Server, VS Code extension, REPL, playground, documentation, examples and templates provide a consistent developer-facing experience while reusing shared compiler and runtime services.
+
+### ORIEL language core
+
+ORIEL source code flows through the lexer, parser, AST, semantic analyzer, type checker, intermediate representation, optimizer and bytecode generator. Compiler logic remains independent from IDE-specific clients and high-level frameworks.
+
+### Runtime and execution
+
+The ORIEL virtual machine and runtime services provide bytecode interpretation, file and network I/O, process management, concurrency, environment configuration, memory management and future JIT compilation support.
+
+### Standard library
+
+The standard library is organized into reusable modules including core, collections, I/O, networking, text, math, time, regular expressions, JSON, cryptography and database utilities.
+
+### Package and module system
+
+Modules, package management, dependency resolution, version management and registry integration form the distribution foundation for ORIEL applications and frameworks.
+
+### QA automation framework
+
+Testing is built into the platform and covers unit, integration, API, web, mobile, database, performance, security, AI/ML, coverage and reporting workflows.
+
+### Framework ecosystem
+
+The planned ecosystem includes database, API, web, cross-platform UI, mobile, desktop, data science and AI frameworks built above the stable language core, runtime and standard library.
+
+### Infrastructure and DevOps
+
+Logging, configuration, caching, events, dependency injection, scheduling, command-line tooling and monitoring provide shared operational services. CI/CD includes build, test, quality gates, packaging, security scanning and release automation.
+
+### Platforms and integrations
+
+ORIEL targets Windows, macOS, Ubuntu/Linux, Android and iOS, with external integration paths for cloud platforms, containers, Kubernetes, databases, message queues and third-party APIs.
 
 ## Dependency rules
 
-- Lexer does not depend on Parser.
-- Parser depends only on Lexer, source spans, diagnostics and AST.
-- Semantic analysis depends on AST, symbols and types.
-- Runtime does not depend on CLI or frameworks.
-- CLI coordinates services but contains no compiler logic.
-- LSP reuses compiler frontend and semantic analysis.
-- Frameworks depend on the standard library and runtime.
-- Compiler core never depends on frameworks.
+- The lexer must not depend on the parser.
+- The parser depends only on source services, tokens, diagnostics and AST definitions.
+- Semantic analysis and type checking operate on the AST and symbol/type systems.
+- IR and bytecode generation depend on typed compiler structures, not on editor clients.
+- The runtime must not depend on the CLI, IDE extensions or application frameworks.
+- The CLI and LSP coordinate shared services but contain no duplicated compiler logic.
+- IDE support should use thin adapters around the shared Language Server and Debug Adapter services.
+- Frameworks depend on the language runtime and standard library; the compiler core never depends on frameworks.
 
-## Current bootstrap mapping
+## Active 0.8.1 mapping
 
-The active 0.7.0 implementation is still partly monolithic. The stabilization branch should progressively split `interpreter.py` into source, lexer, parser, AST, semantic, type and runtime packages without changing public behavior.
+The active implementation is maintained under `src/oriel/`. Historical snapshots are preserved under `versions/` where available. The current repository also contains the VS Code extension source, tests, examples, release artifacts and version-specific documentation required to trace development from 0.1.0 through 0.8.1.
+
+## Implementation note
+
+The diagram represents both implemented capabilities and the broader open-source platform architecture. Detailed implementation status must be verified against `IMPLEMENTATION_STATUS.md`, `VERSION_HISTORY.md`, the changelog and version-specific verification documents. Planned features must not be presented as production-complete until their tests and release gates pass.
