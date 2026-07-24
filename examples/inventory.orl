@@ -1,0 +1,16 @@
+fn calculate_total(quantity: Int, price: Int) -> Int {
+    return quantity * price
+}
+
+fn main() {
+    let product = "Bearing"
+    let quantity = 10
+    let price = 1500
+    let total = calculate_total(quantity, price)
+
+    if total > 10000 {
+        print(product + " stock value is high: " + total)
+    } else {
+        print(product + " stock value: " + total)
+    }
+}

@@ -1,0 +1,14 @@
+LICENSE
+README.md
+pyproject.toml
+src/oriel/__init__.py
+src/oriel/__main__.py
+src/oriel/cli.py
+src/oriel/interpreter.py
+src/oriel_language.egg-info/PKG-INFO
+src/oriel_language.egg-info/SOURCES.txt
+src/oriel_language.egg-info/dependency_links.txt
+src/oriel_language.egg-info/entry_points.txt
+src/oriel_language.egg-info/top_level.txt
+tests/test_cli_package.py
+tests/test_oriel.py
