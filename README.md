@@ -1,54 +1,40 @@
-# Oriel CLI 0.2.0
+# ORIEL Language 0.3.0 — Foundation Release
 
-Oriel 0.2.0 expands the prototype interpreter with collections, loops, file
-operations, JSON utilities, and complete project workflows.
+ORIEL 0.3 develops the next recommended layer after the console prototype.
 
-## Install
+## Included
 
-```bash
-python -m pip install .
+- Structured compiler diagnostics with error codes and source locations
+- Static type annotations for variables, parameters and return values
+- Preview static type checker
+- Local package manifest, dependency install and lock file
+- CLI commands: `add`, `remove`, `install`, `packages`, `lsp`
+- Preview Language Server Protocol server with live diagnostics, completion and hover
+- Existing ORIEL 0.2 console features
+
+## Example
+
+```oriel
+fn add(a: Int, b: Int) -> Int {
+    return a + b
+}
+
+fn main() {
+    let total: Int = add(2, 3)
+    print(total)
+}
 ```
 
 ## Commands
 
 ```bash
-oriel version
-oriel run examples/collections.orl
-oriel check examples/collections.orl
-oriel new my_project
-oriel format my_project
-oriel test --path my_project
-oriel build --path my_project
+oriel check src/main.orl
+oriel add oriel.text
+oriel install
+oriel packages
+oriel lsp
 ```
 
-## Collections and loops
+## Scope
 
-```oriel
-fn main() {
-    var values = [1, 2, 3]
-    values[1] = 5
-
-    for value in values {
-        print(value)
-    }
-
-    print(values[0])
-    print(length(values))
-}
-```
-
-Lists support indexing, negative indexing, indexed assignment, concatenation,
-and iteration. Strings support indexing and iteration.
-
-## Files and JSON
-
-```oriel
-fn main() {
-    write_file("data.json", json_encode([1, 2, 3]))
-    let values = json_decode(read_file("data.json"))
-    print(values[1])
-}
-```
-
-Built-in helpers are `read_file`, `write_file`, `json_encode`, `json_decode`,
-and `length`.
+This is a developer-preview implementation. The package registry is local and curated; it is not yet an online public registry. The LSP currently provides the foundation for live diagnostics, completion and hover. Full references, rename and cross-module navigation remain future work.

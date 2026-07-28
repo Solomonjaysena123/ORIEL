@@ -1,11 +1,12 @@
+
 [build-system]
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "oriel-language"
-version = "0.2.0"
-description = "Installable interpreter and CLI for the Oriel Software Language"
+version = "0.3.0"
+description = "ORIEL 0.3 language foundation with diagnostics, type checker, packages and LSP"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
