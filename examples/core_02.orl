@@ -1,0 +1,15 @@
+fn main() {
+    let platforms = ["Web", "Mobile", "Desktop", "AI"]
+    push(platforms, "Cloud")
+
+    print("Total platforms: " + len(platforms))
+    print("First platform: " + platforms[0])
+
+    for platform in platforms {
+        print("ORIEL builds " + platform)
+    }
+
+    let encoded = json_encode(platforms)
+    write_file("oriel-platforms.json", encoded)
+    print("Saved JSON: " + encoded)
+}
