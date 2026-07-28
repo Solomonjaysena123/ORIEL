@@ -1,0 +1,8 @@
+fn main() {
+    var languages = ["Oriel", "Python", "Rust"]
+    languages[1] = "JavaScript"
+
+    for language in languages {
+        print(language)
+    }
+}

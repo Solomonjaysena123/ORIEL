@@ -1,0 +1,20 @@
+{
+  "Main function": {
+    "prefix": "main",
+    "body": [
+      "fn main() {",
+      "    ${1:print(\"Hello from Oriel!\")}",
+      "}"
+    ],
+    "description": "Create an Oriel main function"
+  },
+  "For loop": {
+    "prefix": "for",
+    "body": [
+      "for ${1:item} in ${2:items} {",
+      "    ${3:print(item)}",
+      "}"
+    ],
+    "description": "Iterate over an Oriel collection"
+  }
+}
