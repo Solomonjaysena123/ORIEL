@@ -2,48 +2,62 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+import shutil
 import sys
-import unittest
-import zipfile
+import tomllib
 
 from . import __version__
-from .interpreter import Lexer, Parser, run_source
+from .interpreter import Lexer, Parser, TypeChecker, run_source
+from . import package_manager
+from .lsp import run_lsp
 
-
-HELLO_TEMPLATE = """// main.orl
+HELLO_TEMPLATE = '''// src/main.orl
 
 fn main() {
-    print("Hello from Oriel!")
+    let technologies = ["Console", "Web", "Mobile", "AI"]
+
+    for technology in technologies {
+        print("ORIEL builds " + technology)
+    }
 }
-"""
+'''
+
+TEST_TEMPLATE = '''fn main() {
+    let result = 2 + 2
+    if result != 4 {
+        print("FAIL: mathematics")
+    } else {
+        print("PASS: mathematics")
+    }
+}
+'''
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        prog="oriel",
-        description="Oriel Software Language command-line interface.",
-    )
-    subparsers = parser.add_subparsers(dest="command", required=True)
-    subparsers.add_parser("version", help="Show the installed Oriel version.")
-
-    run = subparsers.add_parser("run", help="Run an Oriel source file.")
+    parser = argparse.ArgumentParser(prog="oriel", description="Oriel Software Language CLI.")
+    sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("version", help="Show the installed Oriel version.")
+    run = sub.add_parser("run", help="Run an Oriel source file.")
     run.add_argument("file", type=Path)
-
-    check = subparsers.add_parser("check", help="Check Oriel syntax without running.")
+    check = sub.add_parser("check", help="Check Oriel syntax without running.")
     check.add_argument("file", type=Path)
-
-    new = subparsers.add_parser("new", help="Create a new Oriel project.")
+    new = sub.add_parser("new", help="Create a structured Oriel project.")
     new.add_argument("name")
     new.add_argument("--path", type=Path, default=Path.cwd())
-
-    format_command = subparsers.add_parser("format", help="Format Oriel source files.")
-    format_command.add_argument("paths", nargs="+", type=Path)
-
-    test = subparsers.add_parser("test", help="Run project tests.")
-    test.add_argument("--path", type=Path, default=Path.cwd())
-
-    build = subparsers.add_parser("build", help="Build a distributable project ZIP.")
-    build.add_argument("--path", type=Path, default=Path.cwd())
+    fmt = sub.add_parser("format", help="Apply basic formatting to an Oriel file or project.")
+    fmt.add_argument("path", type=Path, nargs="?", default=Path.cwd())
+    test = sub.add_parser("test", help="Run all .orl tests in the tests directory.")
+    test.add_argument("path", type=Path, nargs="?", default=Path.cwd())
+    build = sub.add_parser("build", help="Validate and create a distributable build directory.")
+    build.add_argument("path", type=Path, nargs="?", default=Path.cwd())
+    add = sub.add_parser("add", help="Add a dependency to oriel.toml.")
+    add.add_argument("package")
+    add.add_argument("--version")
+    remove = sub.add_parser("remove", help="Remove a project dependency.")
+    remove.add_argument("package")
+    sub.add_parser("install", help="Install dependencies from oriel.toml.")
+    sub.add_parser("packages", help="List packages in the preview registry.")
+    sub.add_parser("lsp", help="Start the ORIEL language server over stdio.")
     return parser
 
 
@@ -56,69 +70,90 @@ def read_source(path: Path) -> str:
 
 
 def check_source(source: str) -> None:
-    Parser(Lexer(source).scan_tokens()).parse()
+    statements = Parser(Lexer(source).scan_tokens()).parse()
+    TypeChecker().check(statements)
 
 
 def create_project(name: str, base: Path) -> Path:
     clean = name.strip()
-    if not clean or any(char in clean for char in '\\/:*?"<>|'):
+    if not clean or any(ch in clean for ch in '\\/:*?"<>|'):
         raise ValueError("Project name contains invalid characters.")
     project = base / clean
     if project.exists():
         raise FileExistsError(f"Project already exists: {project}")
-    project.mkdir(parents=True)
-    (project / "main.orl").write_text(HELLO_TEMPLATE, encoding="utf-8")
+    (project / "src").mkdir(parents=True)
     (project / "tests").mkdir()
+    (project / "src" / "main.orl").write_text(HELLO_TEMPLATE, encoding="utf-8")
+    (project / "main.orl").write_text(HELLO_TEMPLATE.replace("// src/main.orl", "// main.orl"), encoding="utf-8")
+    (project / "tests" / "core_test.orl").write_text(TEST_TEMPLATE, encoding="utf-8")
+    (project / "oriel.toml").write_text(
+        f'[project]\nname = "{clean}"\nversion = "0.1.0"\nentry = "src/main.orl"\n\n[dependencies]\noriel.core = "0.3.0"\n', encoding="utf-8"
+    )
     (project / "README.md").write_text(
-        f"# {clean}\n\nRun with:\n\n```bash\noriel run main.orl\n```\n",
+        f"# {clean}\n\nRun: `oriel run src/main.orl`\n\nTest: `oriel test`\n\nBuild: `oriel build`\n",
         encoding="utf-8",
     )
     return project
 
 
 def format_source(source: str) -> str:
-    lines = [line.rstrip().replace("\t", "    ") for line in source.splitlines()]
-    while lines and not lines[-1]:
-        lines.pop()
-    return "\n".join(lines) + "\n"
+    lines = []
+    indent = 0
+    for raw in source.splitlines():
+        text = raw.strip()
+        if not text:
+            lines.append("")
+            continue
+        if text.startswith("}"):
+            indent = max(0, indent - 1)
+        lines.append("    " * indent + text)
+        if text.endswith("{"):
+            indent += 1
+    return "\n".join(lines).rstrip() + "\n"
 
 
-def format_paths(paths: list[Path]) -> int:
-    files: list[Path] = []
-    for path in paths:
-        files.extend(sorted(path.rglob("*.orl")) if path.is_dir() else [path])
-    for path in files:
-        path.write_text(format_source(read_source(path)), encoding="utf-8")
-        print(f"Formatted: {path}")
-    return len(files)
+def find_oriel_files(path: Path) -> list[Path]:
+    if path.is_file():
+        return [path]
+    return sorted(p for p in path.rglob("*.orl") if "build" not in p.parts)
 
 
-def run_project_tests(project: Path) -> bool:
-    success = True
-    python_tests = project / "tests"
-    if python_tests.exists():
-        suite = unittest.defaultTestLoader.discover(str(python_tests), pattern="test_*.py")
-        if suite.countTestCases():
-            success = unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
-        for path in sorted(python_tests.glob("*.orl")):
-            run_source(read_source(path), str(path))
-            print(f"Passed: {path}")
-    return success
+def run_tests(project: Path) -> int:
+    test_dir = project / "tests" if project.is_dir() else project.parent
+    files = sorted(test_dir.glob("*.orl"))
+    if not files:
+        print("No Oriel tests found.")
+        return 0
+    failures = 0
+    for file in files:
+        try:
+            run_source(read_source(file), str(file))
+            print(f"✓ {file.name}")
+        except Exception as error:
+            failures += 1
+            print(f"✗ {file.name}\n{error}", file=sys.stderr)
+    print(f"Tests: {len(files) - failures} passed, {failures} failed")
+    return 1 if failures else 0
 
 
 def build_project(project: Path) -> Path:
-    main_file = project / "main.orl"
-    if not main_file.exists():
-        raise FileNotFoundError(f"Project entry point not found: {main_file}")
-    check_source(read_source(main_file))
-    output_dir = project / "dist"
-    output_dir.mkdir(exist_ok=True)
-    archive = output_dir / f"{project.name}-0.2.0.zip"
-    with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as package:
-        for path in sorted(project.rglob("*")):
-            if path.is_file() and output_dir not in path.parents:
-                package.write(path, path.relative_to(project))
-    return archive
+    config_path = project / "oriel.toml"
+    entry = Path("src/main.orl")
+    if config_path.exists():
+        config = tomllib.loads(config_path.read_text(encoding="utf-8"))
+        entry = Path(config.get("project", {}).get("entry", str(entry)))
+    source_path = project / entry
+    source = read_source(source_path)
+    check_source(source)
+    build_dir = project / "build"
+    if build_dir.exists():
+        shutil.rmtree(build_dir)
+    build_dir.mkdir()
+    shutil.copy2(source_path, build_dir / "main.orl")
+    if config_path.exists():
+        shutil.copy2(config_path, build_dir / "oriel.toml")
+    (build_dir / "RUN.txt").write_text("Run with: oriel run main.orl\n", encoding="utf-8")
+    return build_dir
 
 
 def main() -> int:
@@ -126,24 +161,53 @@ def main() -> int:
     try:
         if args.command == "version":
             print(f"Oriel {__version__}")
-        elif args.command == "run":
+            return 0
+        if args.command == "run":
             run_source(read_source(args.file), str(args.file))
-        elif args.command == "check":
+            return 0
+        if args.command == "check":
             check_source(read_source(args.file))
             print(f"Check successful: {args.file}")
-        elif args.command == "new":
+            return 0
+        if args.command == "new":
             project = create_project(args.name, args.path)
             print(f"Created Oriel project: {project}")
-        elif args.command == "format":
-            print(f"Formatted {format_paths(args.paths)} Oriel file(s).")
-        elif args.command == "test":
-            return 0 if run_project_tests(args.path) else 1
-        elif args.command == "build":
-            print(f"Built: {build_project(args.path)}")
-        return 0
+            print(f'Run: cd "{project}" && oriel run src/main.orl')
+            return 0
+        if args.command == "format":
+            files = find_oriel_files(args.path)
+            for file in files:
+                file.write_text(format_source(read_source(file)), encoding="utf-8")
+                print(f"Formatted: {file}")
+            return 0
+        if args.command == "test":
+            return run_tests(args.path)
+        if args.command == "build":
+            output = build_project(args.path)
+            print(f"Build successful: {output}")
+            return 0
+        if args.command == "add":
+            version = package_manager.add(Path.cwd(), args.package, args.version)
+            print(f"Added {args.package} {version}")
+            return 0
+        if args.command == "remove":
+            package_manager.remove(Path.cwd(), args.package)
+            print(f"Removed {args.package}")
+            return 0
+        if args.command == "install":
+            count = package_manager.install(Path.cwd())
+            print(f"Installed {count} package(s); lock file updated.")
+            return 0
+        if args.command == "packages":
+            for name, version, description in package_manager.list_registry():
+                print(f"{name:<16} {version:<12} {description}")
+            return 0
+        if args.command == "lsp":
+            return run_lsp()
     except Exception as error:
         print(error, file=sys.stderr)
         return 1
+    return 2
 
 
 if __name__ == "__main__":
