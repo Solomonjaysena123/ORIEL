@@ -10,6 +10,8 @@ from . import __version__
 from .interpreter import Lexer, Parser, TypeChecker, run_source
 from . import package_manager
 from .lsp import run_lsp
+from .modules import load_module_graph
+from .api_framework import create_api_project, serve, route_manifest
 
 HELLO_TEMPLATE = '''// src/main.orl
 
@@ -58,6 +60,19 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("install", help="Install dependencies from oriel.toml.")
     sub.add_parser("packages", help="List packages in the preview registry.")
     sub.add_parser("lsp", help="Start the ORIEL language server over stdio.")
+    graph = sub.add_parser("graph", help="Show the resolved module graph.")
+    graph.add_argument("file", type=Path)
+    api = sub.add_parser("api", help="ORIEL API framework commands.")
+    api_sub = api.add_subparsers(dest="api_command", required=True)
+    api_new = api_sub.add_parser("new", help="Create an ORIEL API project.")
+    api_new.add_argument("name")
+    api_new.add_argument("--path", type=Path, default=Path.cwd())
+    api_routes = api_sub.add_parser("routes", help="List routes in an ORIEL API file.")
+    api_routes.add_argument("file", type=Path)
+    api_serve = api_sub.add_parser("serve", help="Serve an ORIEL API application.")
+    api_serve.add_argument("file", type=Path, nargs="?", default=Path("src/main.orl"))
+    api_serve.add_argument("--host", default="127.0.0.1")
+    api_serve.add_argument("--port", type=int, default=8000)
     return parser
 
 
@@ -74,6 +89,11 @@ def check_source(source: str) -> None:
     TypeChecker().check(statements)
 
 
+def check_file(path: Path) -> None:
+    source, _ = load_module_graph(path)
+    check_source(source)
+
+
 def create_project(name: str, base: Path) -> Path:
     clean = name.strip()
     if not clean or any(ch in clean for ch in '\\/:*?"<>|'):
@@ -87,7 +107,7 @@ def create_project(name: str, base: Path) -> Path:
     (project / "main.orl").write_text(HELLO_TEMPLATE.replace("// src/main.orl", "// main.orl"), encoding="utf-8")
     (project / "tests" / "core_test.orl").write_text(TEST_TEMPLATE, encoding="utf-8")
     (project / "oriel.toml").write_text(
-        f'[project]\nname = "{clean}"\nversion = "0.1.0"\nentry = "src/main.orl"\n\n[dependencies]\noriel.core = "0.3.0"\n', encoding="utf-8"
+        f'[project]\nname = "{clean}"\nversion = "0.1.0"\nentry = "src/main.orl"\n\n[dependencies]\noriel.core = "0.4.0"\n', encoding="utf-8"
     )
     (project / "README.md").write_text(
         f"# {clean}\n\nRun: `oriel run src/main.orl`\n\nTest: `oriel test`\n\nBuild: `oriel build`\n",
@@ -163,10 +183,11 @@ def main() -> int:
             print(f"Oriel {__version__}")
             return 0
         if args.command == "run":
-            run_source(read_source(args.file), str(args.file))
+            source, _ = load_module_graph(args.file)
+            run_source(source, str(args.file))
             return 0
         if args.command == "check":
-            check_source(read_source(args.file))
+            check_file(args.file)
             print(f"Check successful: {args.file}")
             return 0
         if args.command == "new":
@@ -204,6 +225,23 @@ def main() -> int:
             return 0
         if args.command == "lsp":
             return run_lsp()
+        if args.command == "graph":
+            _, files = load_module_graph(args.file)
+            for file in files:
+                print(file)
+            return 0
+        if args.command == "api":
+            if args.api_command == "new":
+                project = create_api_project(args.name, args.path)
+                print(f"Created ORIEL API project: {project}")
+                return 0
+            if args.api_command == "routes":
+                import json
+                print(json.dumps(route_manifest(read_source(args.file)), indent=2))
+                return 0
+            if args.api_command == "serve":
+                serve(args.file, args.host, args.port)
+                return 0
     except Exception as error:
         print(error, file=sys.stderr)
         return 1
