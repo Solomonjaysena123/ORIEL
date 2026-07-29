@@ -1,29 +1,26 @@
 {
-  "version": "0.7.3",
-  "milestone": "Modules and standard library",
+  "version": "0.7.4",
+  "milestone": "Package manager",
   "supplied_test_result": {
     "status": "passed",
-    "tests": 48,
-    "duration_seconds": 0.23,
+    "tests": 52,
+    "duration_seconds": 0.28,
     "source": "TEST_RESULTS.txt"
   },
   "independent_validation": {
     "status": "passed",
-    "checks": 8,
+    "checks": 9,
     "environment": "fresh wheel installation"
   },
   "verified_capabilities": [
-    "package version 0.7.3",
-    "standard-library registry with at least 10 modules",
-    "JSON standard-module export metadata",
-    "module import extraction",
-    "deterministic multi-file graph resolution",
-    "circular import detection",
-    "package version resolution",
-    "transitive dependency resolution"
+    "strict semantic-version parsing",
+    "exact, caret, tilde and minimum constraints",
+    "transitive dependency resolution",
+    "conflict detection",
+    "reproducible SHA-256 lock files"
   ],
   "notes": [
-    "Bundled runtime did not include pytest, so the supplied 48-test result was not independently rerun.",
-    "The release remains a development prototype rather than a production-complete module/package ecosystem."
+    "Bundled runtime did not include pytest, so the supplied 52-test result was not independently rerun.",
+    "Registry access and package installation remain prototype/local capabilities."
   ]
 }

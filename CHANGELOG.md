@@ -1,18 +1,20 @@
 # Changelog
 
+## 0.7.4 - Package manager
+
+- Added strict semantic-version parsing and exact, caret, tilde, and minimum-version constraints.
+- Added deterministic transitive dependency resolution and conflict diagnostics.
+- Added reproducible SHA-256 lock-file generation and registry loading.
+- Added package-resolver regression coverage.
+
 ## 0.7.3 - Modules and standard library
 
-- Added deterministic multi-file module graph resolution.
-- Added circular import detection with readable dependency paths.
-- Added a registry for core, text, math, collections, files, JSON, time, configuration, logging, and testing standard modules.
-- Added package dependency resolution and reproducible lock-file metadata.
-- Added module and standard-library regression coverage.
+- Added deterministic module graphs and circular import detection.
+- Added the official standard-library module registry.
 
 ## 0.7.2 - Static type-system foundation
 
-- Added primitive, collection, nullable, generic, and function type models.
-- Added nested type parsing, literal inference, assignment compatibility, common-type resolution, and numeric widening.
-- Added focused type-system regression coverage.
+- Added structured type models, inference, and assignability foundations.
 
 ## 0.7.1 - Stabilization
 
