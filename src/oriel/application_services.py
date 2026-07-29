@@ -1,4 +1,5 @@
 from __future__ import annotations
+from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -75,21 +76,21 @@ class Repository:
             raise ValueError('No valid fields supplied.')
         cols = ', '.join(f'"{k}"' for k in data)
         qs = ', '.join('?' for _ in data)
-        with self._connect() as con:
+        with closing(self._connect()) as con:
             cur = con.execute(f'INSERT INTO "{self.entity.table}" ({cols}) VALUES ({qs})', tuple(data.values()))
             con.commit()
             return self.find(cur.lastrowid)
     def find(self, row_id):
-        with self._connect() as con:
+        with closing(self._connect()) as con:
             row = con.execute(f'SELECT * FROM "{self.entity.table}" WHERE id=?', (row_id,)).fetchone()
             return dict(row) if row else None
     def all(self, limit=100, offset=0):
-        with self._connect() as con:
+        with closing(self._connect()) as con:
             return [dict(r) for r in con.execute(f'SELECT * FROM "{self.entity.table}" LIMIT ? OFFSET ?', (limit, offset))]
     def where(self, field, value):
         if field not in {f.name for f in self.entity.fields}:
             raise ValueError(f'Unknown field: {field}')
-        with self._connect() as con:
+        with closing(self._connect()) as con:
             return [dict(r) for r in con.execute(f'SELECT * FROM "{self.entity.table}" WHERE "{field}"=?', (value,))]
     def update(self, row_id, values):
         allowed = {f.name for f in self.entity.fields if f.type_name != 'Id'}
@@ -97,12 +98,12 @@ class Repository:
         if not data:
             return self.find(row_id)
         sets = ', '.join(f'"{k}"=?' for k in data)
-        with self._connect() as con:
+        with closing(self._connect()) as con:
             con.execute(f'UPDATE "{self.entity.table}" SET {sets} WHERE id=?', (*data.values(), row_id))
             con.commit()
         return self.find(row_id)
     def delete(self, row_id):
-        with self._connect() as con:
+        with closing(self._connect()) as con:
             cur = con.execute(f'DELETE FROM "{self.entity.table}" WHERE id=?', (row_id,))
             con.commit()
             return cur.rowcount > 0

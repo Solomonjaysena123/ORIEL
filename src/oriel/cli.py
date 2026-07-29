@@ -15,6 +15,7 @@ from .api_framework import create_api_project, serve, route_manifest, openapi_ma
 from .db_framework import create_database_project, schema_manifest, migrate, inspect_database
 from .application_services import generate_crud, hash_password, verify_password, create_token, verify_token, parse_validators, validate
 from .console_tools import write_bytecode, run_bytecode, generate_docs, doctor, benchmark, repl
+from .typesystem import parse_type, is_assignable
 
 HELLO_TEMPLATE = '''// src/main.orl
 
@@ -112,6 +113,8 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("doctor",help="Check the ORIEL development environment.")
     bench=sub.add_parser("benchmark",help="Benchmark an ORIEL source file."); bench.add_argument("file",type=Path); bench.add_argument("--iterations",type=int,default=10)
     sub.add_parser("repl",help="Start the interactive ORIEL console.")
+    ti=sub.add_parser("type-info",help="Parse and compare ORIEL types.")
+    ti.add_argument("source_type"); ti.add_argument("target_type",nargs="?")
     return parser
 
 
@@ -218,6 +221,10 @@ def build_project(project: Path) -> Path:
 def main() -> int:
     args = build_parser().parse_args()
     try:
+        if args.command == "type-info":
+            src=parse_type(args.source_type); print(src)
+            if args.target_type: print("assignable" if is_assignable(src,parse_type(args.target_type)) else "not assignable")
+            return 0
         if args.command == "version":
             print(f"Oriel {__version__}")
             return 0
