@@ -11,7 +11,8 @@ from .interpreter import Lexer, Parser, TypeChecker, run_source
 from . import package_manager
 from .lsp import run_lsp
 from .modules import load_module_graph
-from .api_framework import create_api_project, serve, route_manifest
+from .api_framework import create_api_project, serve, route_manifest, openapi_manifest
+from .db_framework import create_database_project, schema_manifest, migrate, inspect_database
 
 HELLO_TEMPLATE = '''// src/main.orl
 
@@ -73,6 +74,21 @@ def build_parser() -> argparse.ArgumentParser:
     api_serve.add_argument("file", type=Path, nargs="?", default=Path("src/main.orl"))
     api_serve.add_argument("--host", default="127.0.0.1")
     api_serve.add_argument("--port", type=int, default=8000)
+    db = sub.add_parser("db", help="ORIEL database framework commands.")
+    db_sub = db.add_subparsers(dest="db_command", required=True)
+    db_new = db_sub.add_parser("new", help="Create an ORIEL database project.")
+    db_new.add_argument("name")
+    db_new.add_argument("--path", type=Path, default=Path.cwd())
+    db_schema = db_sub.add_parser("schema", help="Display entities and generated SQL.")
+    db_schema.add_argument("file", type=Path, nargs="?", default=Path("src/schema.orl"))
+    db_migrate = db_sub.add_parser("migrate", help="Apply an ORIEL schema to SQLite.")
+    db_migrate.add_argument("file", type=Path, nargs="?", default=Path("src/schema.orl"))
+    db_migrate.add_argument("--database", type=Path, default=Path("data/oriel.db"))
+    db_inspect = db_sub.add_parser("inspect", help="Inspect an ORIEL SQLite database.")
+    db_inspect.add_argument("database", type=Path, nargs="?", default=Path("data/oriel.db"))
+    api_openapi = api_sub.add_parser("openapi", help="Generate an OpenAPI 3.1 document.")
+    api_openapi.add_argument("file", type=Path, nargs="?", default=Path("src/main.orl"))
+    api_openapi.add_argument("--output", type=Path)
     return parser
 
 
@@ -239,8 +255,33 @@ def main() -> int:
                 import json
                 print(json.dumps(route_manifest(read_source(args.file)), indent=2))
                 return 0
+            if args.api_command == "openapi":
+                import json
+                document = json.dumps(openapi_manifest(read_source(args.file)), indent=2) + "\n"
+                if args.output:
+                    args.output.write_text(document, encoding="utf-8")
+                    print(f"OpenAPI document written: {args.output}")
+                else:
+                    print(document, end="")
+                return 0
             if args.api_command == "serve":
                 serve(args.file, args.host, args.port)
+                return 0
+        if args.command == "db":
+            import json
+            if args.db_command == "new":
+                project = create_database_project(args.name, args.path)
+                print(f"Created ORIEL database project: {project}")
+                return 0
+            if args.db_command == "schema":
+                print(json.dumps(schema_manifest(read_source(args.file)), indent=2))
+                return 0
+            if args.db_command == "migrate":
+                count = migrate(args.file, args.database)
+                print(f"Migration successful: {count} table(s) applied to {args.database}")
+                return 0
+            if args.db_command == "inspect":
+                print(json.dumps(inspect_database(args.database), indent=2))
                 return 0
     except Exception as error:
         print(error, file=sys.stderr)

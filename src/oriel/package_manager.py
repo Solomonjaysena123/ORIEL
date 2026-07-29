@@ -3,11 +3,12 @@ from pathlib import Path
 import hashlib, json, shutil, tomllib, re
 
 REGISTRY = {
- "oriel.core":{"versions":["0.3.0","0.4.0"],"description":"Core ORIEL utilities","dependencies":{}},
+ "oriel.core":{"versions":["0.3.0","0.4.0","0.5.0"],"description":"Core ORIEL utilities","dependencies":{}},
  "oriel.text":{"versions":["0.1.0","0.2.0"],"description":"Text helpers","dependencies":{"oriel.core":">=0.4.0"}},
  "oriel.math":{"versions":["0.1.0"],"description":"Math helpers","dependencies":{"oriel.core":">=0.3.0"}},
  "oriel.json":{"versions":["0.1.0"],"description":"JSON helpers","dependencies":{"oriel.core":">=0.3.0"}},
- "oriel.api":{"versions":["0.1.0"],"description":"First functional ORIEL API framework","dependencies":{"oriel.core":">=0.4.0","oriel.json":">=0.1.0"}},
+ "oriel.api":{"versions":["0.1.0","0.2.0"],"description":"ORIEL API framework with OpenAPI and structured responses","dependencies":{"oriel.core":">=0.5.0","oriel.json":">=0.1.0"}},
+ "oriel.db":{"versions":["0.1.0"],"description":"ORIEL SQLite database and schema framework","dependencies":{"oriel.core":">=0.5.0","oriel.json":">=0.1.0"}},
 }
 
 def manifest_path(project):
