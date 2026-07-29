@@ -1,26 +1,27 @@
 {
-  "version": "0.7.4",
-  "milestone": "Package manager",
+  "version": "0.7.5",
+  "milestone": "Language Server and VS Code",
   "supplied_test_result": {
     "status": "passed",
-    "tests": 52,
-    "duration_seconds": 0.28,
+    "tests": 56,
+    "duration_seconds": 0.25,
     "source": "TEST_RESULTS.txt"
   },
   "independent_validation": {
     "status": "passed",
-    "checks": 9,
+    "checks": 8,
     "environment": "fresh wheel installation"
   },
   "verified_capabilities": [
-    "strict semantic-version parsing",
-    "exact, caret, tilde and minimum constraints",
-    "transitive dependency resolution",
-    "conflict detection",
-    "reproducible SHA-256 lock files"
+    "JSON-RPC initialization",
+    "document synchronization capability",
+    "live diagnostics",
+    "completion items",
+    "hover responses",
+    "Content-Length protocol framing"
   ],
   "notes": [
-    "Bundled runtime did not include pytest, so the supplied 52-test result was not independently rerun.",
-    "Registry access and package installation remain prototype/local capabilities."
+    "Bundled runtime did not include pytest, so the supplied 56-test result was not independently rerun.",
+    "Formatting is capability-advertised but currently returns no edits; the server core is not yet a complete stdio process implementation."
   ]
 }

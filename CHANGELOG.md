@@ -1,20 +1,20 @@
 # Changelog
 
+## 0.7.5 - Language Server and VS Code
+
+- Added a dependency-free JSON-RPC language-server core.
+- Added document synchronization and live diagnostics.
+- Added completion, hover, and formatting capability negotiation.
+- Updated VS Code integration and language-server capability commands.
+- Added language-server protocol regression coverage.
+
 ## 0.7.4 - Package manager
 
-- Added strict semantic-version parsing and exact, caret, tilde, and minimum-version constraints.
-- Added deterministic transitive dependency resolution and conflict diagnostics.
-- Added reproducible SHA-256 lock-file generation and registry loading.
-- Added package-resolver regression coverage.
+- Added semantic-version dependency resolution and reproducible lock files.
 
 ## 0.7.3 - Modules and standard library
 
-- Added deterministic module graphs and circular import detection.
-- Added the official standard-library module registry.
-
-## 0.7.2 - Static type-system foundation
-
-- Added structured type models, inference, and assignability foundations.
+- Added deterministic module graphs and standard-library metadata.
 
 ## 0.7.1 - Stabilization
 
