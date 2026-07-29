@@ -14,6 +14,7 @@ from .modules import load_module_graph
 from .api_framework import create_api_project, serve, route_manifest, openapi_manifest
 from .db_framework import create_database_project, schema_manifest, migrate, inspect_database
 from .application_services import generate_crud, hash_password, verify_password, create_token, verify_token, parse_validators, validate
+from .console_tools import write_bytecode, run_bytecode, generate_docs, doctor, benchmark, repl
 
 HELLO_TEMPLATE = '''// src/main.orl
 
@@ -104,6 +105,13 @@ def build_parser() -> argparse.ArgumentParser:
     ac = auth_sub.add_parser("check-token"); ac.add_argument("token"); ac.add_argument("--secret", required=True)
     val = sub.add_parser("validate", help="Validate JSON data against an ORIEL validator.")
     val.add_argument("file", type=Path); val.add_argument("validator"); val.add_argument("json_data")
+    compile_cmd=sub.add_parser("compile", help="Compile ORIEL source to portable bytecode.")
+    compile_cmd.add_argument("file",type=Path); compile_cmd.add_argument("--output",type=Path)
+    runbc=sub.add_parser("run-bytecode",help="Run an ORIEL .obc file."); runbc.add_argument("file",type=Path)
+    docs=sub.add_parser("docs",help="Generate Markdown API documentation."); docs.add_argument("file",type=Path); docs.add_argument("--output",type=Path,default=Path("docs/API.md"))
+    sub.add_parser("doctor",help="Check the ORIEL development environment.")
+    bench=sub.add_parser("benchmark",help="Benchmark an ORIEL source file."); bench.add_argument("file",type=Path); bench.add_argument("--iterations",type=int,default=10)
+    sub.add_parser("repl",help="Start the interactive ORIEL console.")
     return parser
 
 
@@ -138,7 +146,7 @@ def create_project(name: str, base: Path) -> Path:
     (project / "main.orl").write_text(HELLO_TEMPLATE.replace("// src/main.orl", "// main.orl"), encoding="utf-8")
     (project / "tests" / "core_test.orl").write_text(TEST_TEMPLATE, encoding="utf-8")
     (project / "oriel.toml").write_text(
-        f'[project]\nname = "{clean}"\nversion = "0.1.0"\nentry = "src/main.orl"\n\n[dependencies]\noriel.core = "0.6.0"\n', encoding="utf-8"
+        f'[project]\nname = "{clean}"\nversion = "0.1.0"\nentry = "src/main.orl"\n\n[dependencies]\noriel.core = "0.7.0"\n', encoding="utf-8"
     )
     (project / "README.md").write_text(
         f"# {clean}\n\nRun: `oriel run src/main.orl`\n\nTest: `oriel test`\n\nBuild: `oriel build`\n",
@@ -271,6 +279,15 @@ def main() -> int:
             if args.validator not in validators: raise ValueError(f"Validator not found: {args.validator}")
             issues=validate(json.loads(args.json_data),validators[args.validator])
             print(json.dumps({"valid":not issues,"issues":[i.__dict__ for i in issues]},indent=2)); return 1 if issues else 0
+        if args.command == "compile":
+            output=write_bytecode(args.file,args.output); print(f"Compiled: {output}"); return 0
+        if args.command == "run-bytecode": run_bytecode(args.file); return 0
+        if args.command == "docs": print(f"Documentation generated: {generate_docs(args.file,args.output)}"); return 0
+        if args.command == "doctor":
+            import json; print(json.dumps(doctor(),indent=2)); return 0
+        if args.command == "benchmark":
+            import json; print(json.dumps(benchmark(args.file,args.iterations),indent=2)); return 0
+        if args.command == "repl": repl(); return 0
         if args.command == "lsp":
             return run_lsp()
         if args.command == "graph":
