@@ -13,6 +13,7 @@ from .lsp import run_lsp
 from .modules import load_module_graph
 from .api_framework import create_api_project, serve, route_manifest, openapi_manifest
 from .db_framework import create_database_project, schema_manifest, migrate, inspect_database
+from .application_services import generate_crud, hash_password, verify_password, create_token, verify_token, parse_validators, validate
 
 HELLO_TEMPLATE = '''// src/main.orl
 
@@ -89,6 +90,20 @@ def build_parser() -> argparse.ArgumentParser:
     api_openapi = api_sub.add_parser("openapi", help="Generate an OpenAPI 3.1 document.")
     api_openapi.add_argument("file", type=Path, nargs="?", default=Path("src/main.orl"))
     api_openapi.add_argument("--output", type=Path)
+    gen = sub.add_parser("generate", help="Generate ORIEL application scaffolding.")
+    gen_sub = gen.add_subparsers(dest="generate_command", required=True)
+    crud = gen_sub.add_parser("crud", help="Generate CRUD API, validation and tests.")
+    crud.add_argument("entity")
+    crud.add_argument("--schema", type=Path, default=Path("src/schema.orl"))
+    crud.add_argument("--output", type=Path, default=Path("generated"))
+    auth = sub.add_parser("auth", help="Password and token utilities.")
+    auth_sub = auth.add_subparsers(dest="auth_command", required=True)
+    ah = auth_sub.add_parser("hash"); ah.add_argument("password")
+    av = auth_sub.add_parser("verify"); av.add_argument("password"); av.add_argument("encoded")
+    at = auth_sub.add_parser("token"); at.add_argument("subject"); at.add_argument("--secret", required=True); at.add_argument("--expires", type=int, default=3600)
+    ac = auth_sub.add_parser("check-token"); ac.add_argument("token"); ac.add_argument("--secret", required=True)
+    val = sub.add_parser("validate", help="Validate JSON data against an ORIEL validator.")
+    val.add_argument("file", type=Path); val.add_argument("validator"); val.add_argument("json_data")
     return parser
 
 
@@ -123,7 +138,7 @@ def create_project(name: str, base: Path) -> Path:
     (project / "main.orl").write_text(HELLO_TEMPLATE.replace("// src/main.orl", "// main.orl"), encoding="utf-8")
     (project / "tests" / "core_test.orl").write_text(TEST_TEMPLATE, encoding="utf-8")
     (project / "oriel.toml").write_text(
-        f'[project]\nname = "{clean}"\nversion = "0.1.0"\nentry = "src/main.orl"\n\n[dependencies]\noriel.core = "0.4.0"\n', encoding="utf-8"
+        f'[project]\nname = "{clean}"\nversion = "0.1.0"\nentry = "src/main.orl"\n\n[dependencies]\noriel.core = "0.6.0"\n', encoding="utf-8"
     )
     (project / "README.md").write_text(
         f"# {clean}\n\nRun: `oriel run src/main.orl`\n\nTest: `oriel test`\n\nBuild: `oriel build`\n",
@@ -239,6 +254,23 @@ def main() -> int:
             for name, version, description in package_manager.list_registry():
                 print(f"{name:<16} {version:<12} {description}")
             return 0
+        if args.command == "generate":
+            if args.generate_command == "crud":
+                files = generate_crud(args.schema, args.entity, args.output)
+                for file in files: print(f"Generated: {file}")
+                return 0
+        if args.command == "auth":
+            import json
+            if args.auth_command == "hash": print(hash_password(args.password)); return 0
+            if args.auth_command == "verify": print("valid" if verify_password(args.password,args.encoded) else "invalid"); return 0
+            if args.auth_command == "token": print(create_token(args.subject,args.secret,args.expires)); return 0
+            if args.auth_command == "check-token": print(json.dumps(verify_token(args.token,args.secret),indent=2)); return 0
+        if args.command == "validate":
+            import json
+            validators=parse_validators(read_source(args.file))
+            if args.validator not in validators: raise ValueError(f"Validator not found: {args.validator}")
+            issues=validate(json.loads(args.json_data),validators[args.validator])
+            print(json.dumps({"valid":not issues,"issues":[i.__dict__ for i in issues]},indent=2)); return 1 if issues else 0
         if args.command == "lsp":
             return run_lsp()
         if args.command == "graph":
