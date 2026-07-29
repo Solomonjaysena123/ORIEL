@@ -1,34 +1,29 @@
 {
-  "version": "0.7.2",
-  "date": "2026-07-29",
-  "supplied_tests": {
-    "passed": 44,
+  "version": "0.7.3",
+  "milestone": "Modules and standard library",
+  "supplied_test_result": {
+    "status": "passed",
+    "tests": 48,
+    "duration_seconds": 0.23,
     "source": "TEST_RESULTS.txt"
   },
   "independent_validation": {
-    "fresh_install": true,
-    "checks_passed": 13,
-    "coverage": [
-      "generic type parsing",
-      "nullable assignability",
-      "numeric widening",
-      "literal and collection inference",
-      "function signatures",
-      "public compiler APIs",
-      "runtime smoke test"
-    ]
+    "status": "passed",
+    "checks": 8,
+    "environment": "fresh wheel installation"
   },
-  "artifacts": {
-    "wheel": {
-      "file": "oriel_language-0.7.2-py3-none-any.whl",
-      "sha256": "31d8c38f2b2b4e5ddb90e9007ca75fc051ece4b9c61ac9e762bfabaf01027e9b"
-    },
-    "vsix": {
-      "file": "oriel-language-support-0.7.2.vsix",
-      "sha256": "022b8d09f89c9fe4718abea0a2cc2c91dcc3d58a5e34f953d2744ca193d95263"
-    }
-  },
-  "fixes": [
-    "Restored deterministic SQLite connection cleanup for database and repository operations on Windows."
+  "verified_capabilities": [
+    "package version 0.7.3",
+    "standard-library registry with at least 10 modules",
+    "JSON standard-module export metadata",
+    "module import extraction",
+    "deterministic multi-file graph resolution",
+    "circular import detection",
+    "package version resolution",
+    "transitive dependency resolution"
+  ],
+  "notes": [
+    "Bundled runtime did not include pytest, so the supplied 48-test result was not independently rerun.",
+    "The release remains a development prototype rather than a production-complete module/package ecosystem."
   ]
 }

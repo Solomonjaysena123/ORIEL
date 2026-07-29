@@ -1,14 +1,18 @@
 # Changelog
 
-## 0.7.2 - Static Type-System Completion
+## 0.7.3 - Modules and standard library
 
-- Added immutable primitive, collection, nullable, and function type representations.
-- Added nested generic type syntax and type parsing.
-- Added literal and collection element inference.
-- Added numeric widening and assignment-compatibility rules.
-- Added function signature argument validation.
-- Added the V0.7.2 valid/invalid type-system regression corpus.
-- Preserved deterministic SQLite connection cleanup on Windows.
+- Added deterministic multi-file module graph resolution.
+- Added circular import detection with readable dependency paths.
+- Added a registry for core, text, math, collections, files, JSON, time, configuration, logging, and testing standard modules.
+- Added package dependency resolution and reproducible lock-file metadata.
+- Added module and standard-library regression coverage.
+
+## 0.7.2 - Static type-system foundation
+
+- Added primitive, collection, nullable, generic, and function type models.
+- Added nested type parsing, literal inference, assignment compatibility, common-type resolution, and numeric widening.
+- Added focused type-system regression coverage.
 
 ## 0.7.1 - Stabilization
 
