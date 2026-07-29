@@ -19,6 +19,7 @@ from .typesystem import parse_type, is_assignable
 from .standard_library import list_modules
 from .module_resolver import resolve_graph
 from .package_resolver import Resolver, read_registry, write_lock
+from .language_server_v2 import LanguageServer
 
 HELLO_TEMPLATE = '''// src/main.orl
 
@@ -121,6 +122,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("stdlib",help="List ORIEL standard-library modules.")
     mg=sub.add_parser("module-graph",help="Resolve a deterministic module graph."); mg.add_argument("file",type=Path); mg.add_argument("--root",type=Path)
     pr=sub.add_parser("resolve-packages",help="Resolve packages from a JSON registry."); pr.add_argument("registry",type=Path); pr.add_argument("requirements",nargs="+"); pr.add_argument("--lock",type=Path,default=Path("oriel.lock"))
+    sub.add_parser("lsp-capabilities",help="Print ORIEL LSP capabilities.")
     return parser
 
 
@@ -240,6 +242,8 @@ def main() -> int:
             return 0
         if args.command == "resolve-packages":
             req=dict(item.split("=",1) for item in args.requirements); selected=Resolver(read_registry(args.registry)).resolve(req); write_lock(args.lock,selected); print(f"Resolved {len(selected)} package(s) to {args.lock}"); return 0
+        if args.command == "lsp-capabilities":
+            print(LanguageServer().handle({'jsonrpc':'2.0','id':1,'method':'initialize','params':{}})['result']['capabilities']); return 0
         if args.command == "version":
             print(f"Oriel {__version__}")
             return 0
