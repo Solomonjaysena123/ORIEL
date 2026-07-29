@@ -1,17 +1,24 @@
 {
-  "version": "0.3.0",
+  "version": "0.4.0",
   "status": "passed",
   "python": ">=3.10",
   "tests": {
     "framework": "unittest",
-    "passed": 10,
-    "failed": 0
+    "passed": 15,
+    "failed": 0,
+    "coverage": [
+      "multi-file modules",
+      "circular imports",
+      "LSP navigation foundations",
+      "API route parsing",
+      "transitive package locking"
+    ]
   },
   "artifacts": {
     "wheel": {
-      "file": "oriel_language-0.3.0-py3-none-any.whl",
-      "sha256": "49a4e625615a5b82d3ea6022af37c2c33b086f1c3a2ce39348248a98e05847ed"
+      "file": "oriel_language-0.4.0-py3-none-any.whl",
+      "sha256": "8b3ffd2593dcc188609f959a0bd052212fad2bebf01ea1c8481024a46dfaca07"
     }
   },
-  "verified_at": "2026-07-28"
+  "verified_at": "2026-07-29"
 }
