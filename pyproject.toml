@@ -5,8 +5,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oriel-language"
-version = "0.7.5"
-description = "ORIEL 0.7.5 - Language Server and VS Code"
+version = "0.8.1"
+description = "ORIEL 0.8.1 - Debugging and performance"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}

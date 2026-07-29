@@ -1,20 +1,17 @@
 # Changelog
 
-## 0.7.5 - Language Server and VS Code
+## 0.8.1 - Debugging and performance
 
-- Added a dependency-free JSON-RPC language-server core.
-- Added document synchronization and live diagnostics.
-- Added completion, hover, and formatting capability negotiation.
-- Updated VS Code integration and language-server capability commands.
-- Added language-server protocol regression coverage.
+- Added VM breakpoint trace events with instruction-level state snapshots.
+- Added deterministic VM profiling with instruction counts and timing metrics.
+- Added `debug-vm` and `profile-vm` CLI workflows.
+- Added automated coverage for debugger and profiler behavior.
 
-## 0.7.4 - Package manager
+## 0.8.0 - Virtual machine foundation
 
-- Added semantic-version dependency resolution and reproducible lock files.
-
-## 0.7.3 - Modules and standard library
-
-- Added deterministic module graphs and standard-library metadata.
+- Added a stack-based virtual machine and bytecode compiler.
+- Added bytecode serialization, execution, and disassembly workflows.
+- Added VM-focused CLI commands and automated tests.
 
 ## 0.7.1 - Stabilization
 

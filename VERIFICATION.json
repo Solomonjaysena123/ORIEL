@@ -1,27 +1,24 @@
 {
-  "version": "0.7.5",
-  "milestone": "Language Server and VS Code",
-  "supplied_test_result": {
-    "status": "passed",
-    "tests": 56,
-    "duration_seconds": 0.25,
-    "source": "TEST_RESULTS.txt"
+  "version": "0.8.1",
+  "milestone": "Debugging and performance",
+  "package_reported_tests": {
+    "command": "python -m pytest",
+    "result": "62 passed in 0.30s",
+    "source": "TEST_RESULTS.txt",
+    "independently_rerun": false,
+    "reason": "Bundled validation runtime does not include pytest"
   },
   "independent_validation": {
-    "status": "passed",
-    "checks": 8,
-    "environment": "fresh wheel installation"
+    "wheel_build": "passed",
+    "fresh_wheel_install": "passed",
+    "version_check": "0.8.1",
+    "debugger_breakpoint_smoke": "passed",
+    "profiler_smoke": "passed"
   },
-  "verified_capabilities": [
-    "JSON-RPC initialization",
-    "document synchronization capability",
-    "live diagnostics",
-    "completion items",
-    "hover responses",
-    "Content-Length protocol framing"
-  ],
-  "notes": [
-    "Bundled runtime did not include pytest, so the supplied 56-test result was not independently rerun.",
-    "Formatting is capability-advertised but currently returns no edits; the server core is not yet a complete stdio process implementation."
+  "artifacts": [
+    "oriel_language-0.8.1-py3-none-any.whl",
+    "oriel-language-support-0.8.1.vsix",
+    "ORIEL_Core_0.8.1_Source.zip",
+    "SHA256SUMS.txt"
   ]
 }
