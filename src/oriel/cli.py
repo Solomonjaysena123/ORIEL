@@ -16,6 +16,8 @@ from .db_framework import create_database_project, schema_manifest, migrate, ins
 from .application_services import generate_crud, hash_password, verify_password, create_token, verify_token, parse_validators, validate
 from .console_tools import write_bytecode, run_bytecode, generate_docs, doctor, benchmark, repl
 from .typesystem import parse_type, is_assignable
+from .standard_library import list_modules
+from .module_resolver import resolve_graph
 
 HELLO_TEMPLATE = '''// src/main.orl
 
@@ -115,6 +117,8 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("repl",help="Start the interactive ORIEL console.")
     ti=sub.add_parser("type-info",help="Parse and compare ORIEL types.")
     ti.add_argument("source_type"); ti.add_argument("target_type",nargs="?")
+    sub.add_parser("stdlib",help="List ORIEL standard-library modules.")
+    mg=sub.add_parser("module-graph",help="Resolve a deterministic module graph."); mg.add_argument("file",type=Path); mg.add_argument("--root",type=Path)
     return parser
 
 
@@ -224,6 +228,13 @@ def main() -> int:
         if args.command == "type-info":
             src=parse_type(args.source_type); print(src)
             if args.target_type: print("assignable" if is_assignable(src,parse_type(args.target_type)) else "not assignable")
+            return 0
+        if args.command == "stdlib":
+            for module in list_modules(): print(f"{module.name}: {', '.join(module.exports)}")
+            return 0
+        if args.command == "module-graph":
+            graph=resolve_graph(args.file,args.root)
+            for name,path in graph.files.items(): print(f"{name} -> {path}")
             return 0
         if args.command == "version":
             print(f"Oriel {__version__}")
