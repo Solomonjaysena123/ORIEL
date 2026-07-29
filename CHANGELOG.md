@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.7.0 - 2026-07-29
+
+### Added
+- Portable `.obc` bytecode preview with compile and execution commands.
+- Interactive ORIEL REPL with multiline input support.
+- Environment doctor reporting Python, platform, VS Code CLI, and write access.
+- Markdown API documentation generation for ORIEL functions.
+- Repeatable benchmark command with minimum, maximum, and average timing.
+- Consolidated console commands in the primary ORIEL CLI.
+- Roadmap-aligned console regression coverage.
+
+### Fixed
+- Preserved deterministic SQLite connection cleanup for database and repository operations on Windows.
+
 ## 0.6.0 - 2026-07-29
 
 - Added repository-style SQLite CRUD utilities.

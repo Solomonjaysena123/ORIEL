@@ -1,27 +1,30 @@
 {
-  "version": "0.6.0",
-  "status": "passed",
-  "python": ">=3.10",
+  "version": "0.7.0",
+  "date": "2026-07-29",
   "tests": {
     "framework": "unittest",
-    "passed": 24,
+    "passed": 28,
     "failed": 0,
     "coverage": [
-      "repository CRUD integration",
-      "validation matrix",
-      "password and token authentication",
-      "environment configuration",
-      "CRUD scaffolding"
+      "bytecode smoke tests",
+      "REPL-adjacent console command coverage",
+      "doctor environment tests",
+      "benchmark stability tests",
+      "documentation generation",
+      "prior roadmap regression suites"
     ]
   },
-  "fixes": [
-    "preserved deterministic SQLite connection cleanup"
-  ],
   "artifacts": {
     "wheel": {
-      "file": "oriel_language-0.6.0-py3-none-any.whl",
-      "sha256": "7e403df10e43a4018d2a61618733b037ce67054150edabff5395604dcd8cc524"
+      "file": "oriel_language-0.7.0-py3-none-any.whl",
+      "sha256": "e4022802eda509107f2c150250f794a9e68d7c2b4339b52dfc098f7a0aedffa4"
     }
   },
-  "verified_at": "2026-07-29"
+  "commands": {
+    "version": "Oriel 0.7.0"
+  },
+  "notes": [
+    "Clean source archive excludes caches, build output, and generated .egg-info metadata.",
+    "SQLite connections are deterministically closed on Windows."
+  ]
 }
