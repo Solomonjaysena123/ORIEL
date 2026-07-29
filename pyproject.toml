@@ -5,8 +5,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oriel-language"
-version = "0.7.0"
-description = "ORIEL 0.7 stable console foundation with bytecode, REPL, docs, doctor and benchmarking"
+version = "0.7.1"
+description = "ORIEL 0.7.1 stabilized console foundation with bytecode, REPL, docs, doctor and benchmarking"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
@@ -20,3 +20,8 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-ra"

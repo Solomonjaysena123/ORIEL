@@ -1,64 +1,20 @@
 # Changelog
 
-## 0.7.0 - 2026-07-29
+## 0.7.1 - Stabilization
 
-### Added
-- Portable `.obc` bytecode preview with compile and execution commands.
-- Interactive ORIEL REPL with multiline input support.
-- Environment doctor reporting Python, platform, VS Code CLI, and write access.
-- Markdown API documentation generation for ORIEL functions.
-- Repeatable benchmark command with minimum, maximum, and average timing.
-- Consolidated console commands in the primary ORIEL CLI.
-- Roadmap-aligned console regression coverage.
+- Audited lexer, parser, AST, runtime, diagnostics, and type checker.
+- Added stable compiler-component import paths.
+- Added diagnostic codes and actionable source diagnostics.
+- Added duplicate declaration and top-level return validation.
+- Added static unknown-identifier and function-arity checks.
+- Added regression tests; complete suite passes with 39 tests.
 
-### Fixed
-- Preserved deterministic SQLite connection cleanup for database and repository operations on Windows.
+## Unreleased
 
-## 0.6.0 - 2026-07-29
+- Consolidated ORIEL versions into one open-source repository structure.
+- Added architecture, roadmap, CI workflows and contribution guidance.
+- Set 0.7.0 bootstrap source as the active engineering baseline.
 
-- Added repository-style SQLite CRUD utilities.
-- Added declarative validation rules and validation issue reporting.
-- Added PBKDF2 password hashing and signed authentication tokens.
-- Added `.env` configuration loading.
-- Added entity-driven CRUD API, validator, and test scaffolding.
-- Added CRUD integration, validation matrix, authentication, and configuration tests.
-- Preserved deterministic SQLite connection cleanup across database and repository operations.
+## 0.7.0
 
-## 0.5.0 - 2026-07-29
-
-- Added the `oriel.db` SQLite framework preview.
-- Added entity schema parsing and deterministic SQL generation.
-- Added database project generation, migrations, and schema inspection.
-- Added OpenAPI 3.1 generation for `oriel.api` routes.
-- Added structured JSON responses, errors, CORS headers, and query metadata.
-- Added database, migration, OpenAPI, and API serialization regression tests.
-- Fixed SQLite connection cleanup on Windows to prevent locked database files.
-
-## 0.4.0 - 2026-07-29
-
-- Added multi-file module graphs and `use` imports.
-- Added circular-import detection and module graph inspection.
-- Added LSP definition, references, rename, and document-symbol foundations.
-- Added the first `oriel.api` preview with project generation, route parsing, and local serving.
-- Added semantic dependency constraints, transitive resolution, and lock-file format version 2.
-- Added module, circular-import, LSP navigation, API route, and package-resolution tests.
-
-## 0.3.0 - 2026-07-28
-
-- Added structured diagnostics with error codes and source locations.
-- Added static type annotations and preview type checking.
-- Added package manifests, reproducible lock files, and local package commands.
-- Added the initial language server with diagnostics, completion, and hover.
-
-## 0.2.0 - 2026-07-28
-
-- Added list literals, indexing, indexed assignment, concatenation, and `for` loops.
-- Added UTF-8 file read/write and JSON encode/decode helpers.
-- Added project creation, formatting, testing, and reproducible ZIP build commands.
-- Added collection, loop, file-system, JSON, and CLI integration tests.
-- Added Windows, macOS, and Linux continuous integration.
-- Added VS Code snippets for main functions and collection loops.
-
-## 0.1.0
-
-- Added the initial console interpreter and command-line interface.
+See `versions/0.7.0/README.md` and release assets.
