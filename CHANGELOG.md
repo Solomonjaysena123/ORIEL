@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.7.2 - Static Type-System Completion
+
+- Added immutable primitive, collection, nullable, and function type representations.
+- Added nested generic type syntax and type parsing.
+- Added literal and collection element inference.
+- Added numeric widening and assignment-compatibility rules.
+- Added function signature argument validation.
+- Added the V0.7.2 valid/invalid type-system regression corpus.
+- Preserved deterministic SQLite connection cleanup on Windows.
+
 ## 0.7.1 - Stabilization
 
 - Audited lexer, parser, AST, runtime, diagnostics, and type checker.
