@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.0 - 2026-07-29
+
+- Added the `oriel.db` SQLite framework preview.
+- Added entity schema parsing and deterministic SQL generation.
+- Added database project generation, migrations, and schema inspection.
+- Added OpenAPI 3.1 generation for `oriel.api` routes.
+- Added structured JSON responses, errors, CORS headers, and query metadata.
+- Added database, migration, OpenAPI, and API serialization regression tests.
+- Fixed SQLite connection cleanup on Windows to prevent locked database files.
+
 ## 0.4.0 - 2026-07-29
 
 - Added multi-file module graphs and `use` imports.

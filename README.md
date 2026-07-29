@@ -1,46 +1,27 @@
-# ORIEL Language 0.4.0 — Modules, LSP and API Framework
+# ORIEL Software Language 0.5
 
-ORIEL 0.4 advances the language platform with:
+ORIEL 0.5 adds the first database framework and expands `oriel.api`.
 
-- Project modules using `use utilities` or `use "utilities.orl"`
-- Module graph resolution and circular-import detection
-- Stronger package resolution with semantic constraints and transitive dependencies
-- Lock-file format version 2 with checksums and dependency metadata
-- LSP definitions, references, rename, document symbols, completions, hover and diagnostics
-- First functional framework package: `oriel.api`
-- API project generator, route inspection and development server
+## New in 0.5
 
-## Install
+- `oriel.db` SQLite schema framework
+- `entity` schema parser and SQL generation
+- Database project generator, migration, and inspection commands
+- `oriel.api` OpenAPI 3.1 generation
+- Structured JSON API responses and errors
+- JSON object/array handler responses
+- CORS headers and query-string metadata
+- Updated local package registry and dependency graph
 
-```powershell
-python -m pip install --upgrade .\oriel_language-0.4.0-py3-none-any.whl
+## Commands
+
+```bash
+oriel db new inventory-db
+oriel db schema src/schema.orl
+oriel db migrate src/schema.orl --database data/inventory.db
+oriel db inspect data/inventory.db
+oriel api openapi src/main.orl --output openapi.json
+oriel api serve src/main.orl --port 8000
 ```
 
-## Modules
-
-`src/math_tools.orl`:
-
-```oriel
-fn double(value: Int) -> Int { return value * 2 }
-```
-
-`src/main.orl`:
-
-```oriel
-use math_tools
-fn main() { print(double(10)) }
-```
-
-```powershell
-oriel run src\main.orl
-oriel graph src\main.orl
-```
-
-## API Framework
-
-```powershell
-oriel api new hello-api
-cd hello-api
-oriel api routes src\main.orl
-oriel api serve src\main.orl --port 8000
-```
+This remains a prototype implementation distributed through Python.

@@ -1,23 +1,26 @@
 {
-  "version": "0.4.0",
+  "version": "0.5.0",
   "status": "passed",
   "python": ">=3.10",
   "tests": {
     "framework": "unittest",
-    "passed": 15,
+    "passed": 20,
     "failed": 0,
     "coverage": [
-      "multi-file modules",
-      "circular imports",
-      "LSP navigation foundations",
-      "API route parsing",
-      "transitive package locking"
+      "entity schema and SQL generation",
+      "SQLite migration and inspection",
+      "OpenAPI 3.1 schema",
+      "structured API serialization",
+      "package dependency graph"
     ]
   },
+  "fixes": [
+    "deterministic SQLite connection cleanup on Windows"
+  ],
   "artifacts": {
     "wheel": {
-      "file": "oriel_language-0.4.0-py3-none-any.whl",
-      "sha256": "8b3ffd2593dcc188609f959a0bd052212fad2bebf01ea1c8481024a46dfaca07"
+      "file": "oriel_language-0.5.0-py3-none-any.whl",
+      "sha256": "f9948dd93f32536918bec865548e4e2f1ae0befe30844d30b856dfec000c8d22"
     }
   },
   "verified_at": "2026-07-29"
