@@ -20,6 +20,8 @@ from .standard_library import list_modules
 from .module_resolver import resolve_graph
 from .package_resolver import Resolver, read_registry, write_lock
 from .language_server_v2 import LanguageServer
+from .vm import Compiler as VMCompiler, VirtualMachine, Program as VMProgram, disassemble
+from .debugger import Debugger, Profiler
 
 HELLO_TEMPLATE = '''// src/main.orl
 
@@ -123,6 +125,11 @@ def build_parser() -> argparse.ArgumentParser:
     mg=sub.add_parser("module-graph",help="Resolve a deterministic module graph."); mg.add_argument("file",type=Path); mg.add_argument("--root",type=Path)
     pr=sub.add_parser("resolve-packages",help="Resolve packages from a JSON registry."); pr.add_argument("registry",type=Path); pr.add_argument("requirements",nargs="+"); pr.add_argument("--lock",type=Path,default=Path("oriel.lock"))
     sub.add_parser("lsp-capabilities",help="Print ORIEL LSP capabilities.")
+    cv=sub.add_parser("compile-vm",help="Compile source to ORIEL VM bytecode."); cv.add_argument("file",type=Path); cv.add_argument("--output",type=Path)
+    rv=sub.add_parser("run-vm",help="Run ORIEL VM bytecode."); rv.add_argument("file",type=Path)
+    dv=sub.add_parser("disassemble-vm",help="Disassemble ORIEL VM bytecode."); dv.add_argument("file",type=Path)
+    dbg=sub.add_parser("debug-vm",help="Trace ORIEL VM bytecode."); dbg.add_argument("file",type=Path); dbg.add_argument("--break-line",type=int,action="append",default=[])
+    prof=sub.add_parser("profile-vm",help="Profile ORIEL VM bytecode."); prof.add_argument("file",type=Path); prof.add_argument("--iterations",type=int,default=100)
     return parser
 
 
@@ -244,6 +251,19 @@ def main() -> int:
             req=dict(item.split("=",1) for item in args.requirements); selected=Resolver(read_registry(args.registry)).resolve(req); write_lock(args.lock,selected); print(f"Resolved {len(selected)} package(s) to {args.lock}"); return 0
         if args.command == "lsp-capabilities":
             print(LanguageServer().handle({'jsonrpc':'2.0','id':1,'method':'initialize','params':{}})['result']['capabilities']); return 0
+        if args.command == "compile-vm":
+            output=args.output or args.file.with_suffix('.obc'); output.write_text(VMCompiler().compile_source(read_source(args.file)).to_json(),encoding='utf-8'); print(output); return 0
+        if args.command == "run-vm":
+            VirtualMachine().run(VMProgram.from_json(args.file.read_text(encoding='utf-8'))); return 0
+        if args.command == "disassemble-vm":
+            print(disassemble(VMProgram.from_json(args.file.read_text(encoding='utf-8')))); return 0
+        if args.command == "debug-vm":
+            d=Debugger(VMProgram.from_json(args.file.read_text(encoding='utf-8')))
+            for line in args.break_line: d.add_breakpoint(line)
+            for e in d.trace(): print(f"{e.kind:<10} ip={e.ip:04d} line={e.line} {e.op} stack={list(e.stack)} globals={e.globals}")
+            return 0
+        if args.command == "profile-vm":
+            r=Profiler().profile(VMProgram.from_json(args.file.read_text(encoding='utf-8')),args.iterations); print(f"iterations={r.iterations} elapsed={r.elapsed_seconds:.6f}s average={r.average_seconds:.8f}s instructions={r.instruction_counts}"); return 0
         if args.command == "version":
             print(f"Oriel {__version__}")
             return 0
