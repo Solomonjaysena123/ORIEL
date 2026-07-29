@@ -10,11 +10,12 @@ import json
 class OrielError(Exception):
     """Structured compiler/runtime diagnostic."""
 
-    def __init__(self, message: str, line: int = 0, column: int = 0, code: str = "E000", help_text: str | None = None):
+    def __init__(self, message: str, line: int = 0, column: int = 0, code: str = "E0000", help_text: str | None = None, end_column: int | None = None):
         super().__init__(message)
         self.message = message
         self.line = line
         self.column = column
+        self.end_column = end_column or max(column + 1, column)
         self.code = code
         self.help_text = help_text
 
@@ -22,7 +23,8 @@ class OrielError(Exception):
         lines = source.splitlines()
         if 1 <= self.line <= len(lines):
             code_line = lines[self.line - 1]
-            caret = " " * max(self.column - 1, 0) + "^"
+            width = max(1, self.end_column - self.column)
+            caret = " " * max(self.column - 1, 0) + "^" * width
             rendered = (
                 f"error[{self.code}]: {self.message}\n"
                 f" --> {filename}:{self.line}:{self.column}\n\n"
@@ -180,7 +182,7 @@ class Lexer:
         elif c.isalpha() or c == "_":
             self.identifier()
         else:
-            raise OrielError(f"Unexpected character '{c}'.", self.line, self.start_column)
+            raise OrielError(f"Unexpected character '{c}'.", self.line, self.start_column, 'E1001', 'Remove the character or replace it with valid ORIEL syntax.')
 
     def identifier(self) -> None:
         while self.peek().isalnum() or self.peek() == "_":
@@ -203,7 +205,7 @@ class Lexer:
         value_chars: list[str] = []
         while self.peek() != '"' and not self.is_at_end():
             if self.peek() == "\n":
-                raise OrielError("Unterminated string.", self.line, self.start_column)
+                raise OrielError("Unterminated string.", self.line, self.start_column, 'E1002', 'Add a closing double quote.')
             ch = self.advance()
             if ch == "\\":
                 esc = self.advance()
@@ -211,7 +213,7 @@ class Lexer:
             else:
                 value_chars.append(ch)
         if self.is_at_end():
-            raise OrielError("Unterminated string.", self.line, self.start_column)
+            raise OrielError("Unterminated string.", self.line, self.start_column, 'E1002', 'Add a closing double quote.')
         self.advance()
         self.add_token(TokenType.STRING, "".join(value_chars))
 
@@ -467,7 +469,7 @@ class Parser:
             value = self.assignment()
             if isinstance(expr, Variable):
                 return Assign(expr.name, value)
-            raise OrielError("Invalid assignment target.", equals.line, equals.column)
+            raise OrielError("Invalid assignment target.", equals.line, equals.column, 'E2004', 'Assign only to a mutable variable declared with var.')
         return expr
 
     def or_expr(self) -> Expr:
@@ -564,7 +566,7 @@ class Parser:
             self.consume(TokenType.RIGHT_PAREN, "Expected ')' after expression.")
             return Grouping(expr)
         token = self.peek()
-        raise OrielError("Expected an expression.", token.line, token.column)
+        raise OrielError("Expected an expression.", token.line, token.column, 'E2001', 'Add a literal, variable, function call, list, or parenthesized expression.')
 
     def skip_newlines(self) -> None:
         while self.match(TokenType.NEWLINE):
@@ -581,7 +583,7 @@ class Parser:
         if self.check(token_type):
             return self.advance()
         token = self.peek()
-        raise OrielError(message, token.line, token.column)
+        raise OrielError(message, token.line, token.column, 'E2002')
 
     def check(self, token_type: TokenType) -> bool:
         if self.is_at_end():
@@ -614,7 +616,11 @@ class Environment:
         self.values: dict[str, Binding] = {}
         self.enclosing = enclosing
 
-    def define(self, name: str, value: Any, mutable: bool = False) -> None:
+    def define(self, name: str, value: Any, mutable: bool = False, token: Token | None = None) -> None:
+        if name in self.values:
+            line = token.line if token else 0
+            column = token.column if token else 0
+            raise OrielError(f"Duplicate declaration '{name}'.", line, column, "E3003", "Rename or remove one of the declarations.")
         self.values[name] = Binding(value, mutable)
 
     def get(self, token: Token) -> Any:
@@ -622,23 +628,25 @@ class Environment:
             return self.values[token.lexeme].value
         if self.enclosing:
             return self.enclosing.get(token)
-        raise OrielError(f"Undefined variable '{token.lexeme}'.", token.line, token.column)
+        raise OrielError(f"Undefined variable '{token.lexeme}'.", token.line, token.column, 'E3001', 'Declare the variable before using it.')
 
     def assign(self, token: Token, value: Any) -> None:
         if token.lexeme in self.values:
             binding = self.values[token.lexeme]
             if not binding.mutable:
                 raise OrielError(
-                    f"Cannot assign to immutable variable '{token.lexeme}'. Use 'var' for mutable values.",
+                    f"Cannot assign to immutable variable '{token.lexeme}'.",
                     token.line,
                     token.column,
+                    'E3002',
+                    "Declare the value with 'var' if it must change.",
                 )
             binding.value = value
             return
         if self.enclosing:
             self.enclosing.assign(token, value)
             return
-        raise OrielError(f"Undefined variable '{token.lexeme}'.", token.line, token.column)
+        raise OrielError(f"Undefined variable '{token.lexeme}'.", token.line, token.column, 'E3001', 'Declare the variable before using it.')
 
 
 class ReturnSignal(Exception):
@@ -667,7 +675,7 @@ class UserFunction(OrielCallable):
     def call(self, interpreter: "Interpreter", arguments: list[Any]) -> Any:
         env = Environment(self.closure)
         for param, arg in zip(self.declaration.params, arguments):
-            env.define(param.lexeme, arg, mutable=False)
+            env.define(param.lexeme, arg, mutable=False, token=param)
         try:
             interpreter.execute_block(self.declaration.body, env)
         except ReturnSignal as signal:
@@ -721,6 +729,8 @@ class Interpreter:
 
     def interpret(self, statements: list[Stmt]) -> None:
         for statement in statements:
+            if isinstance(statement, ReturnStmt):
+                raise OrielError("return may only be used inside a function.", statement.keyword.line, statement.keyword.column, "E3004", "Move the return statement into a function.")
             self.execute(statement)
 
         # Oriel convention: automatically call main() when it exists.
@@ -728,7 +738,7 @@ class Interpreter:
             main_value = self.globals.values["main"].value
             if isinstance(main_value, OrielCallable):
                 if main_value.arity != 0:
-                    raise OrielError("main() must not accept parameters.")
+                    raise OrielError("main() must not accept parameters.", code="E6001", help_text="Declare main as fn main() without parameters.")
                 main_value.call(self, [])
 
     def execute(self, stmt: Stmt) -> None:
@@ -737,7 +747,7 @@ class Interpreter:
         elif isinstance(stmt, PrintStmt):
             self.output(self.stringify(self.evaluate(stmt.expression)))
         elif isinstance(stmt, VarStmt):
-            self.environment.define(stmt.name.lexeme, self.evaluate(stmt.initializer), stmt.mutable)
+            self.environment.define(stmt.name.lexeme, self.evaluate(stmt.initializer), stmt.mutable, stmt.name)
         elif isinstance(stmt, BlockStmt):
             self.execute_block(stmt.statements, Environment(self.environment))
         elif isinstance(stmt, IfStmt):
@@ -754,7 +764,7 @@ class Interpreter:
                 raise OrielError("For loop requires a list or string.", stmt.name.line, stmt.name.column)
             for item in iterable:
                 loop_env = Environment(self.environment)
-                loop_env.define(stmt.name.lexeme, item, mutable=False)
+                loop_env.define(stmt.name.lexeme, item, mutable=False, token=stmt.name)
                 if isinstance(stmt.body, BlockStmt):
                     self.execute_block(stmt.body.statements, loop_env)
                 else:
@@ -765,7 +775,7 @@ class Interpreter:
                     finally:
                         self.environment = previous
         elif isinstance(stmt, FunctionStmt):
-            self.environment.define(stmt.name.lexeme, UserFunction(stmt, self.environment), mutable=False)
+            self.environment.define(stmt.name.lexeme, UserFunction(stmt, self.environment), mutable=False, token=stmt.name)
         elif isinstance(stmt, ReturnStmt):
             raise ReturnSignal(None if stmt.value is None else self.evaluate(stmt.value))
         else:
@@ -847,11 +857,11 @@ class Interpreter:
                 return left * right
             if t == TokenType.SLASH:
                 if right == 0:
-                    raise OrielError("Division by zero.", op.line, op.column)
+                    raise OrielError("Division by zero.", op.line, op.column, "E6002", "Use a non-zero divisor.")
                 return left / right
             if t == TokenType.PERCENT:
                 if right == 0:
-                    raise OrielError("Modulo by zero.", op.line, op.column)
+                    raise OrielError("Modulo by zero.", op.line, op.column, "E6003", "Use a non-zero divisor.")
                 return left % right
         if t == TokenType.EQUAL_EQUAL:
             return left == right
@@ -948,8 +958,8 @@ class TypeChecker:
         for scope in reversed(self.scopes):
             if name in scope: return scope[name]
         if name in self.functions: return "Function"
-        if name in {"len","range","push","read_file","write_file","json_encode","json_decode","type_of"}: return "Function"
-        return "Any"
+        if name in {"input","len","range","push","read_file","write_file","json_encode","json_decode","type_of"}: return "Function"
+        return "<undefined>"
 
     @staticmethod
     def compatible(expected: str, actual: str) -> bool:
@@ -1013,7 +1023,11 @@ class TypeChecker:
             return "Any"
         if isinstance(expr, ListLiteral):
             [self.expr_type(x) for x in expr.items]; return "List"
-        if isinstance(expr, Variable): return self.resolve(expr.name.lexeme)
+        if isinstance(expr, Variable):
+            resolved = self.resolve(expr.name.lexeme)
+            if resolved == "<undefined>":
+                raise OrielError(f"Undefined variable '{expr.name.lexeme}'.", expr.name.line, expr.name.column, "E3001", "Declare the variable before using it.")
+            return resolved
         if isinstance(expr, Assign):
             actual=self.expr_type(expr.value); expected=self.resolve(expr.name.lexeme)
             if expected != "Any": self.ensure_type(expr.name, expected, actual, f"assignment to '{expr.name.lexeme}'")
@@ -1034,6 +1048,8 @@ class TypeChecker:
             if isinstance(expr.callee, Variable) and expr.callee.name.lexeme in self.functions:
                 params, ret=self.functions[expr.callee.name.lexeme]
                 args=[self.expr_type(a) for a in expr.arguments]
+                if len(args) != len(params):
+                    raise OrielError(f"function '{expr.callee.name.lexeme}' expects {len(params)} arguments but received {len(args)}", expr.paren.line, expr.paren.column, "E4003", "Pass the required number of arguments.")
                 for i,(expected,actual) in enumerate(zip(params,args),1):
                     if expected != "Any": self.ensure_type(expr.callee.name, expected, actual, f"argument {i}")
                 return ret
