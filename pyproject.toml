@@ -5,8 +5,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oriel-language"
-version = "0.5.0"
-description = "ORIEL 0.5 database preview with SQLite migrations and OpenAPI"
+version = "0.6.0"
+description = "ORIEL 0.6 application services with ORM, validation, authentication and CRUD generation"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}

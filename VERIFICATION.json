@@ -1,26 +1,26 @@
 {
-  "version": "0.5.0",
+  "version": "0.6.0",
   "status": "passed",
   "python": ">=3.10",
   "tests": {
     "framework": "unittest",
-    "passed": 20,
+    "passed": 24,
     "failed": 0,
     "coverage": [
-      "entity schema and SQL generation",
-      "SQLite migration and inspection",
-      "OpenAPI 3.1 schema",
-      "structured API serialization",
-      "package dependency graph"
+      "repository CRUD integration",
+      "validation matrix",
+      "password and token authentication",
+      "environment configuration",
+      "CRUD scaffolding"
     ]
   },
   "fixes": [
-    "deterministic SQLite connection cleanup on Windows"
+    "preserved deterministic SQLite connection cleanup"
   ],
   "artifacts": {
     "wheel": {
-      "file": "oriel_language-0.5.0-py3-none-any.whl",
-      "sha256": "f9948dd93f32536918bec865548e4e2f1ae0befe30844d30b856dfec000c8d22"
+      "file": "oriel_language-0.6.0-py3-none-any.whl",
+      "sha256": "7e403df10e43a4018d2a61618733b037ce67054150edabff5395604dcd8cc524"
     }
   },
   "verified_at": "2026-07-29"

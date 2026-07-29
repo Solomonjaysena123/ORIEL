@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.0 - 2026-07-29
+
+- Added repository-style SQLite CRUD utilities.
+- Added declarative validation rules and validation issue reporting.
+- Added PBKDF2 password hashing and signed authentication tokens.
+- Added `.env` configuration loading.
+- Added entity-driven CRUD API, validator, and test scaffolding.
+- Added CRUD integration, validation matrix, authentication, and configuration tests.
+- Preserved deterministic SQLite connection cleanup across database and repository operations.
+
 ## 0.5.0 - 2026-07-29
 
 - Added the `oriel.db` SQLite framework preview.
