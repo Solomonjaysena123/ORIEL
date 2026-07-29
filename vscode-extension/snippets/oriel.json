@@ -1,0 +1,81 @@
+{
+  "Main function": {
+    "prefix": "main",
+    "body": [
+      "fn main() {",
+      "    ${1:print(\"Hello from Oriel!\")}",
+      "}"
+    ],
+    "description": "Create an Oriel main function"
+  },
+  "Function": {
+    "prefix": "fn",
+    "body": [
+      "fn ${1:function_name}(${2}) {",
+      "    ${3}",
+      "}"
+    ],
+    "description": "Create an Oriel function"
+  },
+  "If else": {
+    "prefix": "if",
+    "body": [
+      "if ${1:condition} {",
+      "    ${2}",
+      "} else {",
+      "    ${3}",
+      "}"
+    ],
+    "description": "Create an if/else block"
+  },
+  "While loop": {
+    "prefix": "while",
+    "body": [
+      "while ${1:condition} {",
+      "    ${2}",
+      "}"
+    ],
+    "description": "Create a while loop"
+  },
+  "For loop": {
+    "prefix": "for",
+    "body": [
+      "for ${1:item} in ${2:items} {",
+      "    ${3}",
+      "}"
+    ],
+    "description": "Create an ORIEL for-in loop"
+  },
+  "List declaration": {
+    "prefix": "list",
+    "body": [
+      "let ${1:items} = [${2}]"
+    ],
+    "description": "Create an ORIEL list"
+  },
+  "JSON file example": {
+    "prefix": "jsonfile",
+    "body": [
+      "let data = ${1:[\"Web\", \"Mobile\", \"AI\"]}",
+      "write_file(\"${2:data.json}\", json_encode(data))"
+    ],
+    "description": "Encode data as JSON and write it to a file"
+  },
+  "ORIEL Entity": {
+    "prefix": "entity",
+    "body": [
+      "entity ${1:Product} {",
+      "    id: Id",
+      "    ${2:name}: String required",
+      "}"
+    ],
+    "description": "Create an ORIEL database entity"
+  },
+  "ORIEL API Route": {
+    "prefix": "route",
+    "body": [
+      "get \"${1:/path}\" => ${2:handler}"
+    ],
+    "description": "Create an ORIEL API route"
+  }
+}
