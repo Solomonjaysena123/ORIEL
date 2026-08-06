@@ -177,6 +177,8 @@ def test_project_generator_writes_gradle_manifest_resources_and_no_secrets(tmp_p
     assert "android.permission.CAMERA" in manifest
     assert 'android:usesCleartextTraffic="false"' in manifest
     assert 'applicationId = "org.oriel.sample"' in gradle
+    assert "sourceCompatibility = JavaVersion.VERSION_17" in gradle
+    assert 'jvmTarget = "17"' in gradle
     assert "ORIEL_ANDROID_KEYSTORE" in gradle
     assert "storePassword =" in gradle and "password123" not in gradle
     assert "package org.oriel.sample" in activity

@@ -387,6 +387,13 @@ def _app_gradle(config:AndroidConfig)->str:
 android {{
     namespace = "{namespace}"
     compileSdk = {config.compile_sdk}
+    compileOptions {{
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }}
+    kotlinOptions {{
+        jvmTarget = "17"
+    }}
     defaultConfig {{
         applicationId = "{config.application_id}"
         minSdk = {config.min_sdk}
