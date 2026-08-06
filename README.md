@@ -1,8 +1,8 @@
-# ORIEL 0.9.6
+# ORIEL 0.9.7
 
-**Milestone:** Android Framework
+**Milestone:** iOS/iPadOS and Unified Mobile Packaging
 
-ORIEL 0.9.6 adds Android packaging and runtime contracts on top of the v0.9.5 Cross-Platform UI Engine: Gradle project generation, Android rendering, lifecycle management, typed device APIs, runtime permissions, notifications, constrained background work, signing isolation, APK/AAB build commands, and store-readiness validation.
+ORIEL 0.9.7 adds iOS/iPadOS packaging, UIKit rendering contracts, lifecycle and device APIs, privacy permissions, signing validation, Xcode build/archive commands, and unified Android+iOS projects. The complete v0.9.6 Android Framework remains included.
 
 All earlier ORIEL language, QA, application-kernel, database, API, security, web, UI, Python compatibility, CI, and VS Code functionality remains included.
 

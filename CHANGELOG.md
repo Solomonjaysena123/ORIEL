@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.7 - iOS and Unified Mobile Packaging
+
+- Added iOS/iPadOS configuration, UIKit rendering contracts, lifecycle/device APIs, permissions, signing validation, XcodeGen projects, and Xcode build/archive commands.
+- Added unified Android+iOS project generation and cumulative validation.
+- Added Info.plist privacy descriptions, background modes, device-family targeting, secret-material detection, deterministic mocks, and macOS simulator-build CI.
+
 ## 0.9.6 - Android Framework
 
 - Added validated Android application configuration, Gradle Kotlin project generation, manifests, resources, Kotlin launcher source, and debug/release build profiles.

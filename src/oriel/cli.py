@@ -31,6 +31,7 @@ from .android_framework import (
     AndroidConfig, AndroidPermission, build_android_project,
     create_android_project, validate_android_project,
 )
+from .mobile_framework import IOSConfig, UnifiedMobileConfig, build_ios_project, create_ios_project, create_mobile_project, validate_ios_project, validate_mobile_project
 
 HELLO_TEMPLATE = '''// src/main.orl
 
@@ -125,6 +126,13 @@ def build_parser() -> argparse.ArgumentParser:
     android_build.add_argument("path", type=Path, nargs="?", default=Path.cwd())
     android_build.add_argument("--bundle", action="store_true")
     android_build.add_argument("--release", action="store_true")
+    ios=sub.add_parser("ios",help="ORIEL iOS/iPadOS commands."); ios_sub=ios.add_subparsers(dest="ios_command",required=True)
+    ios_new=ios_sub.add_parser("new");ios_new.add_argument("name");ios_new.add_argument("--path",type=Path,default=Path.cwd());ios_new.add_argument("--bundle-id",required=True);ios_new.add_argument("--version",default="0.1.0");ios_new.add_argument("--build-number",type=int,default=1);ios_new.add_argument("--deployment-target",default="15.0")
+    ios_validate=ios_sub.add_parser("validate");ios_validate.add_argument("path",type=Path,nargs="?",default=Path.cwd());ios_validate.add_argument("--store-ready",action="store_true")
+    ios_build=ios_sub.add_parser("build");ios_build.add_argument("path",type=Path,nargs="?",default=Path.cwd());ios_build.add_argument("--archive",action="store_true")
+    mobile=sub.add_parser("mobile",help="Unified Android+iOS projects.");mobile_sub=mobile.add_subparsers(dest="mobile_command",required=True)
+    mobile_new=mobile_sub.add_parser("new");mobile_new.add_argument("name");mobile_new.add_argument("--path",type=Path,default=Path.cwd());mobile_new.add_argument("--application-id",required=True);mobile_new.add_argument("--version",default="0.1.0");mobile_new.add_argument("--build-number",type=int,default=1)
+    mobile_validate=mobile_sub.add_parser("validate");mobile_validate.add_argument("path",type=Path,nargs="?",default=Path.cwd())
     db = sub.add_parser("db", help="ORIEL database framework commands.")
     db_sub = db.add_subparsers(dest="db_command", required=True)
     db_new = db_sub.add_parser("new", help="Create an ORIEL database project.")
@@ -440,6 +448,25 @@ def main() -> int:
                 artifact=build_android_project(args.path,bundle=args.bundle,release=args.release)
                 print(f"Android build successful: {artifact}")
                 return 0
+        if args.command=="ios":
+            if args.ios_command=="new":
+                print(f"Created ORIEL iOS project: {create_ios_project(IOSConfig(args.bundle_id,args.name,args.version,args.build_number,args.deployment_target),args.path)}");return 0
+            if args.ios_command=="validate":
+                issues=validate_ios_project(args.path,store_ready=args.store_ready)
+                if issues:
+                    for issue in issues:print(f"- {issue}",file=sys.stderr)
+                    return 1
+                print(f"iOS project validation successful: {args.path}");return 0
+            if args.ios_command=="build":
+                print(f"iOS build successful: {build_ios_project(args.path,archive=args.archive)}");return 0
+        if args.command=="mobile":
+            if args.mobile_command=="new":
+                print(f"Created unified ORIEL mobile project: {create_mobile_project(UnifiedMobileConfig(args.name,args.application_id,args.version,args.build_number),args.path)}");return 0
+            issues=validate_mobile_project(args.path)
+            if issues:
+                for issue in issues:print(f"- {issue}",file=sys.stderr)
+                return 1
+            print(f"Mobile project validation successful: {args.path}");return 0
         if args.command == "db":
             import json
             if args.db_command == "new":

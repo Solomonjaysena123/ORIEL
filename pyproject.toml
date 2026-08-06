@@ -5,8 +5,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oriel-language"
-version = "0.9.6"
-description = "ORIEL 0.9.6 - Android Framework"
+version = "0.9.7"
+description = "ORIEL 0.9.7 - iOS and Unified Mobile Packaging"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
