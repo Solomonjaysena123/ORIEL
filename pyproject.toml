@@ -5,11 +5,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oriel-language"
-version = "0.9.3"
-description = "ORIEL 0.9.3 - Authentication and Security Framework"
+version = "0.9.4"
+description = "ORIEL 0.9.4 - Web Framework"
 readme = "README.md"
 requires-python = ">=3.10"
-license = {text = "MIT"}
+license = "MIT"
 authors = [{name = "Oriel Language Project"}]
 
 [project.scripts]

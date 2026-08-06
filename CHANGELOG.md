@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.4 - Web Framework
+
+- Added transport-independent web requests, responses, deterministic routing, typed parameters, named routes, route groups, and reverse URL generation.
+- Added ordered middleware, routed lifecycle hooks, configurable error pages, safe templates, validated forms, JSON bodies, redirects, and static-file delivery.
+- Added signed cookie sessions, CSRF protection, hardened response headers, cookie security defaults, header-injection defenses, and bounded session-token decoding.
+- Added ETags, caching, an in-process test client, a threaded development server, and the `oriel web new` and `oriel web serve` workflows.
+- Preserved and regression-tested the v0.9.3 authentication/security hardening and the v0.9.1 SQLite connection fixes.
+
 ## 0.9.3 - Authentication and Security Framework
 
 - Added salted PBKDF2-SHA256 password hashing with bounded work factors and rehash detection.

@@ -11,7 +11,7 @@ from .interpreter import Lexer, Parser, TypeChecker, run_source
 from . import package_manager
 from .lsp import run_lsp
 from .modules import load_module_graph
-from .api_framework import create_api_project, serve, route_manifest, openapi_manifest
+from .api_framework import create_api_project, serve as serve_api, route_manifest, openapi_manifest
 from .db_framework import create_database_project, schema_manifest, migrate, inspect_database, migration_history
 from .application_services import generate_crud, hash_password, verify_password, create_token, verify_token, parse_validators, validate
 from .console_tools import write_bytecode, run_bytecode, generate_docs, doctor, benchmark, repl
@@ -22,6 +22,7 @@ from .package_resolver import Resolver, read_registry, write_lock
 from .language_server_v2 import LanguageServer
 from .vm import Compiler as VMCompiler, VirtualMachine, Program as VMProgram, disassemble
 from .debugger import Debugger, Profiler
+from .web_framework import create_web_project, load_application, serve as serve_web
 
 HELLO_TEMPLATE = '''// src/main.orl
 
@@ -83,6 +84,15 @@ def build_parser() -> argparse.ArgumentParser:
     api_serve.add_argument("file", type=Path, nargs="?", default=Path("src/main.orl"))
     api_serve.add_argument("--host", default="127.0.0.1")
     api_serve.add_argument("--port", type=int, default=8000)
+    web = sub.add_parser("web", help="ORIEL web framework commands.")
+    web_sub = web.add_subparsers(dest="web_command", required=True)
+    web_new = web_sub.add_parser("new", help="Create an ORIEL web project.")
+    web_new.add_argument("name")
+    web_new.add_argument("--path", type=Path, default=Path.cwd())
+    web_serve = web_sub.add_parser("serve", help="Serve an ORIEL Python web application.")
+    web_serve.add_argument("file", type=Path, nargs="?", default=Path("src/app.py"))
+    web_serve.add_argument("--host", default="127.0.0.1")
+    web_serve.add_argument("--port", type=int, default=8080)
     db = sub.add_parser("db", help="ORIEL database framework commands.")
     db_sub = db.add_subparsers(dest="db_command", required=True)
     db_new = db_sub.add_parser("new", help="Create an ORIEL database project.")
@@ -362,7 +372,15 @@ def main() -> int:
                     print(document, end="")
                 return 0
             if args.api_command == "serve":
-                serve(args.file, args.host, args.port)
+                serve_api(args.file, args.host, args.port)
+                return 0
+        if args.command == "web":
+            if args.web_command == "new":
+                project = create_web_project(args.name, args.path)
+                print(f"Created ORIEL web project: {project}")
+                return 0
+            if args.web_command == "serve":
+                serve_web(load_application(args.file), args.host, args.port)
                 return 0
         if args.command == "db":
             import json
