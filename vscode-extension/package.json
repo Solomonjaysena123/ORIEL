@@ -1,9 +1,25 @@
 {
   "name": "oriel-language-support",
   "displayName": "Oriel Language Support",
-  "description": "ORIEL 0.9.4: Web Framework",
-  "version": "0.9.4",
+  "description": "ORIEL 0.9.5: Cross-Platform UI Engine",
+  "version": "0.9.5",
   "publisher": "aryalabs",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Solomonjaysena123/ORIEL.git"
+  },
+  "files": [
+    "extension.js",
+    "language-configuration.json",
+    "syntaxes/**",
+    "snippets/**",
+    "images/**",
+    "README.md",
+    "CHANGELOG.md",
+    "RELEASE-*.md",
+    "LICENSE"
+  ],
   "engines": {
     "vscode": "^1.85.0"
   },

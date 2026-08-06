@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.5 - Cross-Platform UI Engine
+
+- Added immutable declarative nodes, reusable components, row/column/grid/stack layouts, constraints, spacing, alignment, wrapping, and flex growth.
+- Added thread-safe observable state, reactive renderer bindings, backend-neutral renderer contracts, and deterministic memory rendering.
+- Added inherited design-token themes, regional localization fallback, interpolation, pluralization, JSON bundles, and Unicode regression coverage.
+- Added accessibility semantics, semantic heading output, image alternatives, duplicate-key diagnostics, and layout validation.
+- Added a safe HTML reference renderer with escaping, URL-scheme restrictions, constrained CSS sizes and colors, ETags-independent output, and stack rendering.
+- Added the `oriel ui new` workflow while preserving v0.9.4 web/security hardening, Python 3.10 support, CI, packaging, and the VS Code extension.
+
 ## 0.9.4 - Web Framework
 
 - Added transport-independent web requests, responses, deterministic routing, typed parameters, named routes, route groups, and reverse URL generation.

@@ -26,6 +26,7 @@ from .language_server_v2 import LanguageServer
 from .vm import Compiler as VMCompiler, VirtualMachine, Program as VMProgram, disassemble
 from .debugger import Debugger, Profiler
 from .web_framework import create_web_project, load_application, serve as serve_web
+from .ui_engine import create_ui_project
 
 HELLO_TEMPLATE = '''// src/main.orl
 
@@ -96,6 +97,11 @@ def build_parser() -> argparse.ArgumentParser:
     web_serve.add_argument("file", type=Path, nargs="?", default=Path("src/app.py"))
     web_serve.add_argument("--host", default="127.0.0.1")
     web_serve.add_argument("--port", type=int, default=8080)
+    ui = sub.add_parser("ui", help="ORIEL cross-platform UI commands.")
+    ui_sub = ui.add_subparsers(dest="ui_command", required=True)
+    ui_new = ui_sub.add_parser("new", help="Create an ORIEL cross-platform UI project.")
+    ui_new.add_argument("name")
+    ui_new.add_argument("--path", type=Path, default=Path.cwd())
     db = sub.add_parser("db", help="ORIEL database framework commands.")
     db_sub = db.add_subparsers(dest="db_command", required=True)
     db_new = db_sub.add_parser("new", help="Create an ORIEL database project.")
@@ -384,6 +390,11 @@ def main() -> int:
                 return 0
             if args.web_command == "serve":
                 serve_web(load_application(args.file), args.host, args.port)
+                return 0
+        if args.command == "ui":
+            if args.ui_command == "new":
+                project = create_ui_project(args.name, args.path)
+                print(f"Created ORIEL UI project: {project}")
                 return 0
         if args.command == "db":
             import json
