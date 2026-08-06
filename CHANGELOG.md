@@ -7,6 +7,7 @@
 - Added signed cookie sessions, CSRF protection, hardened response headers, cookie security defaults, header-injection defenses, and bounded session-token decoding.
 - Added ETags, caching, an in-process test client, a threaded development server, and the `oriel web new` and `oriel web serve` workflows.
 - Preserved and regression-tested the v0.9.3 authentication/security hardening and the v0.9.1 SQLite connection fixes.
+- Corrected the legacy CI test command and declared the `tomli` compatibility dependency required on Python 3.10.
 
 ## 0.9.3 - Authentication and Security Framework
 
