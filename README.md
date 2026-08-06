@@ -1,13 +1,13 @@
-# ORIEL 0.9.0
+# ORIEL 0.9.1
 
-**Milestone:** Shared Application Framework Kernel
+**Milestone:** Database Application Framework
 
-ORIEL 0.9.0 introduces the shared application foundation for later API, database, web, mobile, and security frameworks: lifecycle management, immutable environment configuration, service resolution, application events, health checks, and structured results. The complete v0.8.3 QA framework remains included.
+ORIEL 0.9.1 promotes the SQLite database layer into a migration and transaction framework with deterministic history, schema validation, explicit rollback behavior, parameterized queries, inspection, and health checks. The v0.9.0 Shared Application Kernel and complete v0.8.3 QA framework remain included.
 
 ## Install
 
 ```bash
-python -m pip install dist/oriel_language-0.9.0-py3-none-any.whl
+python -m pip install dist/oriel_language-0.9.1-py3-none-any.whl
 oriel version
 ```
 
@@ -21,8 +21,8 @@ oriel-qa tests --workers 2 --retries 1 --fail-on-flaky
 
 ## VS Code
 
-Install `dist/oriel-language-support-0.9.0.vsix` using **Extensions -> Install from VSIX**.
+Install `dist/oriel-language-support-0.9.1.vsix` using **Extensions -> Install from VSIX**.
 
 ## Documentation
 
-See [Shared Application Framework Kernel](docs/APPLICATION_KERNEL_0.9.0.md) and [QA Automation](docs/QA_AUTOMATION.md).
+See [Database Framework](docs/DATABASE_FRAMEWORK_0.9.1.md), [Shared Application Framework Kernel](docs/APPLICATION_KERNEL_0.9.0.md), and [QA Automation](docs/QA_AUTOMATION.md).

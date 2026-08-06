@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.1 - Database Application Framework
+
+- Added deterministic, checksum-based and idempotent schema migrations.
+- Added auditable migration history with compatibility for legacy migration tables.
+- Added explicit commit/rollback transaction sessions and parameterized queries.
+- Added duplicate entity and field validation, inspection, and health checks.
+- Added the `oriel db status` command.
+- Retained the v0.9.0 Shared Application Kernel, v0.8.3 QA framework, and SQLite lifecycle fixes.
+
 ## 0.9.0 - Shared Application Framework Kernel
 
 - Added deterministic application lifecycle management and reverse-order shutdown.

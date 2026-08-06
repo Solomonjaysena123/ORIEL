@@ -1,8 +1,8 @@
 {
   "name": "oriel-language-support",
   "displayName": "Oriel Language Support",
-  "description": "ORIEL 0.9.0: Shared Application Framework Kernel",
-  "version": "0.9.0",
+  "description": "ORIEL 0.9.1: Database Application Framework",
+  "version": "0.9.1",
   "publisher": "aryalabs",
   "engines": {
     "vscode": "^1.85.0"
