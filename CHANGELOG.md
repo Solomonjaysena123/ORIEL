@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.0 - Shared Application Framework Kernel
+
+- Added deterministic application lifecycle management and reverse-order shutdown.
+- Added immutable environment configuration and required-value validation.
+- Added singleton/transient services with circular-dependency detection.
+- Added thread-safe synchronous events and unsubscribe handles.
+- Added isolated health checks and structured result values.
+- Retained the complete v0.8.3 QA framework and regression suite.
+
 ## 0.8.3 - QA Automation Stabilization
 
 - Added category-filtered runs and test-listing mode.

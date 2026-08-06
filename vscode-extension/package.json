@@ -1,8 +1,8 @@
 {
   "name": "oriel-language-support",
   "displayName": "Oriel Language Support",
-  "description": "ORIEL 0.8.3: QA Automation Stabilization",
-  "version": "0.8.3",
+  "description": "ORIEL 0.9.0: Shared Application Framework Kernel",
+  "version": "0.9.0",
   "publisher": "aryalabs",
   "engines": {
     "vscode": "^1.85.0"

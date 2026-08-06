@@ -5,6 +5,7 @@ setup.py
 src/oriel/__init__.py
 src/oriel/__main__.py
 src/oriel/api_framework.py
+src/oriel/application_kernel.py
 src/oriel/application_services.py
 src/oriel/ast.py
 src/oriel/cli.py
