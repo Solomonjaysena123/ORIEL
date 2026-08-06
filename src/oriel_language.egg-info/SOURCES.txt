@@ -23,6 +23,7 @@ src/oriel/package_manager.py
 src/oriel/package_resolver.py
 src/oriel/parser.py
 src/oriel/runtime.py
+src/oriel/security_framework.py
 src/oriel/standard_library.py
 src/oriel/typechecker.py
 src/oriel/typesystem.py

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.3 - Authentication and Security Framework
+
+- Added salted PBKDF2-SHA256 password hashing with bounded work factors and rehash detection.
+- Added versioned, scoped, expiring HMAC tokens with defensive payload validation.
+- Added identities, permissions, expiring sessions, revocation, and session-bound CSRF tokens.
+- Added thread-safe sliding-window rate limiting and framework-neutral security headers.
+- Retained the API, Database, Kernel, QA frameworks, regression suite, and SQLite fixes.
+
 ## 0.9.2 - API Application Framework
 
 - Added a transport-independent API dispatcher and in-process test client.
