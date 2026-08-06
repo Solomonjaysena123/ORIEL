@@ -9,7 +9,8 @@
 - [x] v0.9.5 functionality, Python compatibility, CI, VS Code packaging, and MIT licensing preserved.
 - [x] Complete Python and ORIEL QA gates pass.
 - [x] Generated Android project and store-readiness validation pass.
-- [ ] Real APK/AAB build passes when Java, Gradle, and Android SDK are available.
+- [x] Hosted Java 17/Gradle 8.9/Android SDK smoke build produces and verifies a real debug APK.
+- [ ] Signed release AAB build and Play submission pass with user-supplied signing and store credentials.
 - [x] Wheel, source archive, VSIX, and checksums are built and verified.
 - [ ] Commit, push, tag `v0.9.6`, and publish verified release assets.
 
