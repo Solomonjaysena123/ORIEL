@@ -17,19 +17,27 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--retries", type=int, default=0)
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--report-dir", default="qa-reports")
+    parser.add_argument("--category", action="append", help="Run only this category; repeat as needed")
+    parser.add_argument("--fail-on-flaky", action="store_true", help="Return non-zero when retries hide a failure")
+    parser.add_argument("--list", action="store_true", help="List discovered test IDs without running them")
     parser.add_argument("--watch", action="store_true")
     return parser
 
 
 def execute(args: argparse.Namespace) -> int:
-    runner = QARunner(retries=args.retries, workers=args.workers)
-    summary = runner.run(runner.discover(args.path, args.pattern))
+    runner = QARunner(retries=args.retries, workers=args.workers, categories=set(args.category or ()))
+    tests = runner.discover(args.path, args.pattern)
+    if args.list:
+        for test in tests:
+            print(test.id())
+        return 0
+    summary = runner.run(tests)
     report_dir = Path(args.report_dir)
     write_junit(summary, report_dir / "junit.xml")
     write_html(summary, report_dir / "report.html")
     write_json(summary, report_dir / "report.json")
     print(f"{summary.passed} passed, {summary.failed} failed, {summary.skipped} skipped, {summary.flaky} flaky")
-    return 0 if summary.successful else 1
+    return 0 if summary.successful and not (args.fail_on_flaky and summary.flaky) else 1
 
 
 def main(argv: list[str] | None = None) -> int:

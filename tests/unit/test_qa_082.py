@@ -6,6 +6,8 @@ from pathlib import Path
 from xml.etree import ElementTree
 
 from oriel.qa import CheckRequest, QARunner, write_html, write_json, write_junit
+from oriel.qa.cli import build_parser, execute
+from oriel.qa.models import RunSummary
 from oriel.qa.api import APIAdapter
 from oriel.qa.coverage import measure
 from oriel.qa.watch import snapshot
@@ -52,19 +54,16 @@ class _Skip(unittest.TestCase):
         pass
 
 
-class _Flaky(unittest.TestCase):
-    calls = 0
-    def run_case(self):
-        type(self).calls += 1
-        self.assertGreaterEqual(type(self).calls, 2)
-
-
 class RunnerAndReportTests(unittest.TestCase):
-    def setUp(self):
-        _Flaky.calls = 0
-
     def test_retry_flaky_detection_and_reports(self):
-        summary = QARunner(retries=1, workers=2).run([_Pass("run_case"), _Skip("run_case"), _Flaky("run_case")])
+        class FlakyCase(unittest.TestCase):
+            calls = 0
+
+            def run_case(self):
+                type(self).calls += 1
+                self.assertGreaterEqual(type(self).calls, 2)
+
+        summary = QARunner(retries=1, workers=2).run([_Pass("run_case"), _Skip("run_case"), FlakyCase("run_case")])
         self.assertTrue(summary.successful)
         self.assertEqual((summary.passed, summary.skipped, summary.flaky), (2, 1, 1))
         with tempfile.TemporaryDirectory() as folder:
@@ -96,3 +95,31 @@ class RunnerAndReportTests(unittest.TestCase):
     def test_specialized_adapter_is_explicit_stub(self):
         with self.assertRaisesRegex(NotImplementedError, "api testing"):
             APIAdapter().check(CheckRequest("https://example.invalid"))
+
+    def test_category_filtering(self):
+        class IntegrationCase(_Pass):
+            qa_category = "integration"
+
+        summary = QARunner(categories={"INTEGRATION"}).run([_Pass("run_case"), IntegrationCase("run_case")])
+        self.assertEqual(len(summary.results), 1)
+        self.assertEqual(summary.results[0].category, "integration")
+
+    def test_cli_list_mode(self):
+        args = build_parser().parse_args(["tests/unit", "--pattern", "test_qa_082.py", "--list"])
+        self.assertEqual(execute(args), 0)
+
+    def test_junit_distinguishes_errors(self):
+        class ErrorCase(unittest.TestCase):
+            def run_case(self):
+                raise RuntimeError("boom")
+
+        summary = QARunner().run([ErrorCase("run_case")])
+        with tempfile.TemporaryDirectory() as folder:
+            root = ElementTree.parse(write_junit(summary, Path(folder) / "junit.xml")).getroot()
+            self.assertEqual(root.attrib["name"], "oriel-qa")
+            self.assertEqual(root.attrib["errors"], "1")
+            self.assertEqual(root.attrib["failures"], "0")
+
+    def test_coverage_total(self):
+        self.assertIsNone(RunSummary([], 0).coverage_total)
+        self.assertEqual(RunSummary([], 0, {"a.py": 50.0, "b.py": 75.0}).coverage_total, 62.5)

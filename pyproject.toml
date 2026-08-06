@@ -5,8 +5,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oriel-language"
-version = "0.8.2"
-description = "ORIEL 0.8.2 - QA Automation Framework"
+version = "0.8.3"
+description = "ORIEL 0.8.3 - QA Automation Stabilization"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}

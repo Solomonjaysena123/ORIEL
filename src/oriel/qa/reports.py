@@ -12,13 +12,16 @@ from .models import RunSummary
 
 
 def write_junit(summary: RunSummary, path: str | Path) -> Path:
-    root = ET.Element("testsuite", tests=str(len(summary.results)), failures=str(summary.failed), skipped=str(summary.skipped), time=f"{summary.duration:.6f}")
+    errors = sum(result.status == "error" for result in summary.results)
+    failures = sum(result.status == "failed" for result in summary.results)
+    root = ET.Element("testsuite", name="oriel-qa", tests=str(len(summary.results)), failures=str(failures), errors=str(errors), skipped=str(summary.skipped), time=f"{summary.duration:.6f}")
     for result in summary.results:
         case = ET.SubElement(root, "testcase", name=result.test_id, classname=result.category, time=f"{result.duration:.6f}")
         if result.status == "skipped":
             ET.SubElement(case, "skipped")
         elif result.status != "passed":
-            ET.SubElement(case, "failure", message=result.attempts[-1].message).text = result.attempts[-1].message
+            node = "error" if result.status == "error" else "failure"
+            ET.SubElement(case, node, message=result.attempts[-1].message).text = result.attempts[-1].message
         if result.flaky:
             ET.SubElement(case, "system-out").text = "passed after retry; classified as flaky"
     target = Path(path); target.parent.mkdir(parents=True, exist_ok=True)

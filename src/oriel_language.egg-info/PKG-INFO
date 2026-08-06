@@ -1,7 +1,7 @@
 Metadata-Version: 2.4
 Name: oriel-language
-Version: 0.8.2
-Summary: ORIEL 0.8.2 - QA Automation Framework
+Version: 0.8.3
+Summary: ORIEL 0.8.3 - QA Automation Stabilization
 Author: Oriel Language Project
 License: MIT
 Requires-Python: >=3.10
@@ -10,16 +10,16 @@ License-File: LICENSE
 Dynamic: license-file
 Dynamic: requires-python
 
-# ORIEL 0.8.1
+# ORIEL 0.8.3
 
-**Milestone:** Debugging and performance
+**Milestone:** QA Automation Stabilization
 
-This ZIP is a standalone development snapshot. It includes source code, automated tests, a Python wheel, and a VS Code extension package. It is not presented as a production-complete language release.
+ORIEL 0.8.3 stabilizes the dependency-free QA framework with category filtering, discovery listing, strict flaky-test quality gates, corrected JUnit semantics, aggregate coverage summaries, and stronger concurrency-safe regression tests.
 
 ## Install
 
 ```bash
-python -m pip install dist/oriel_language-0.8.1-py3-none-any.whl
+python -m pip install dist/oriel_language-0.8.3-py3-none-any.whl
 oriel version
 ```
 
@@ -28,15 +28,13 @@ oriel version
 ```bash
 python -m pip install pytest
 python -m pytest
+oriel-qa tests --workers 2 --retries 1 --fail-on-flaky
 ```
 
 ## VS Code
 
-Install `dist/oriel-language-support-0.8.1.vsix` using **Extensions -> Install from VSIX**.
+Install `dist/oriel-language-support-0.8.3.vsix` using **Extensions -> Install from VSIX**.
 
-## Milestone implementation
+## Documentation
 
-See `docs/IMPLEMENTATION_0.8.1.md`.
-# ORIEL 0.8.2
-
-ORIEL 0.8.2 adds a production-oriented, dependency-free QA automation framework. See [QA Automation](docs/QA_AUTOMATION.md) for authoring, execution, reports, coverage, extension adapters, and documented limitations.
+See [QA Automation](docs/QA_AUTOMATION.md) for authoring, execution, reports, coverage, extension adapters, and documented limitations.

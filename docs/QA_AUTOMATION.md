@@ -1,4 +1,4 @@
-# ORIEL QA Automation Framework (v0.8.2)
+# ORIEL QA Automation Framework (v0.8.3)
 
 ORIEL QA is a dependency-free automation layer built on Python's stable `unittest` protocol. It supports unit, integration, regression, and snapshot suites; fixtures and mocks; parameterized cases; retries and flaky classification; parallel workers; coverage collection; watch mode; and machine-readable reports.
 
@@ -7,6 +7,8 @@ ORIEL QA is a dependency-free automation layer built on Python's stable `unittes
 ```console
 oriel-qa tests --workers 4 --retries 1 --report-dir qa-reports
 ```
+
+Use `--category integration` to select a suite category, repeat `--category` to select several categories, use `--list` to inspect discovery without execution, and use `--fail-on-flaky` in CI to reject tests that pass only after retry.
 
 The command writes `junit.xml`, `report.html`, and `report.json` and exits non-zero when a test ultimately fails. Parallel mode uses threads and is intended for independent I/O-heavy tests. Tests that mutate process-global state should use one worker.
 

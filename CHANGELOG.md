@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.3 - QA Automation Stabilization
+
+- Added category-filtered runs and test-listing mode.
+- Added strict `--fail-on-flaky` support for CI quality gates.
+- Corrected JUnit XML error/failure classification and suite metadata.
+- Added aggregate coverage summary support and concurrency-safe self-tests.
+- Preserved the v0.8.2 Windows SQLite lifecycle fixes and full regression suite.
+
 ## 0.8.1 - Debugging and performance
 
 - Added VM breakpoint trace events with instruction-level state snapshots.

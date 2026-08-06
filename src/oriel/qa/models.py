@@ -56,3 +56,10 @@ class RunSummary:
     @property
     def successful(self) -> bool:
         return self.failed == 0
+
+    @property
+    def coverage_total(self) -> float | None:
+        """Return the unweighted mean of collected per-file coverage."""
+        if not self.coverage:
+            return None
+        return round(sum(self.coverage.values()) / len(self.coverage), 2)

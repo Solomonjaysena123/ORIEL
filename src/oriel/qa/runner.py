@@ -54,16 +54,19 @@ def _run_test(test: unittest.TestCase, retries: int) -> TestResult:
 
 
 class QARunner:
-    def __init__(self, *, retries: int = 0, workers: int = 1) -> None:
+    def __init__(self, *, retries: int = 0, workers: int = 1, categories: set[str] | None = None) -> None:
         if retries < 0 or workers < 1:
             raise ValueError("retries must be non-negative and workers must be positive")
         self.retries, self.workers = retries, workers
+        self.categories = {value.lower() for value in categories} if categories else None
 
     def discover(self, start_dir: str | Path = "tests", pattern: str = "test*.py") -> list[unittest.TestCase]:
         return _flatten(unittest.defaultTestLoader.discover(str(start_dir), pattern=pattern))
 
     def run(self, tests: list[unittest.TestCase]) -> RunSummary:
         started = time.perf_counter()
+        if self.categories is not None:
+            tests = [test for test in tests if _category(test).lower() in self.categories]
         if self.workers == 1:
             results = [_run_test(test, self.retries) for test in tests]
         else:
