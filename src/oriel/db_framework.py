@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
 import json
@@ -97,7 +98,7 @@ def migrate(source_path: Path, database_path: Path) -> int:
     source = source_path.read_text(encoding="utf-8")
     entities = parse_entities(source)
     database_path.parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(database_path) as connection:
+    with closing(sqlite3.connect(database_path)) as connection:
         for entity in entities:
             connection.execute(entity_sql(entity))
         connection.execute(
@@ -111,7 +112,7 @@ def migrate(source_path: Path, database_path: Path) -> int:
 def inspect_database(database_path: Path) -> dict:
     if not database_path.exists():
         raise FileNotFoundError(f"Database not found: {database_path}")
-    with sqlite3.connect(database_path) as connection:
+    with closing(sqlite3.connect(database_path)) as connection:
         tables = [row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")]
         result = {}
         for table in tables:

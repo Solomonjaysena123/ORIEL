@@ -25,3 +25,6 @@ Install `dist/oriel-language-support-0.8.1.vsix` using **Extensions -> Install f
 ## Milestone implementation
 
 See `docs/IMPLEMENTATION_0.8.1.md`.
+# ORIEL 0.8.2
+
+ORIEL 0.8.2 adds a production-oriented, dependency-free QA automation framework. See [QA Automation](docs/QA_AUTOMATION.md) for authoring, execution, reports, coverage, extension adapters, and documented limitations.

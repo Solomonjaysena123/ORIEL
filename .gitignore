@@ -15,3 +15,5 @@ node_modules/
 *.vsix
 *.whl
 .DS_Store
+qa-reports/
+.coverage

@@ -31,3 +31,11 @@
 ## 0.7.0
 
 See `versions/0.7.0/README.md` and release assets.
+# 0.8.2 - 2026-08-02
+
+- Added `oriel.testing` assertions, snapshots, fixtures, mocks, and parameterized tests.
+- Added `oriel.qa` discovery, categorized results, retries, flaky-test detection, and parallel execution.
+- Added dependency-free line coverage collection and JUnit XML, HTML, and JSON reports.
+- Added polling watch mode and the `oriel-qa` command.
+- Added explicit extension interfaces for API, database, web, mobile, performance, security, and AI QA providers.
+- Expanded CI to validate QA reports on Python 3.10-3.12 across Linux, Windows, and macOS.

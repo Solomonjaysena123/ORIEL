@@ -1,42 +1,42 @@
 Metadata-Version: 2.4
 Name: oriel-language
-Version: 0.1.0
-Summary: Installable interpreter and CLI for the Oriel Software Language
+Version: 0.8.2
+Summary: ORIEL 0.8.2 - QA Automation Framework
 Author: Oriel Language Project
 License: MIT
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Dynamic: license-file
+Dynamic: requires-python
 
+# ORIEL 0.8.1
 
-# Oriel CLI 0.1
+**Milestone:** Debugging and performance
+
+This ZIP is a standalone development snapshot. It includes source code, automated tests, a Python wheel, and a VS Code extension package. It is not presented as a production-complete language release.
 
 ## Install
 
 ```bash
-python -m pip install .
-```
-
-Development installation:
-
-```bash
-python -m pip install -e .
-```
-
-## Commands
-
-```bash
+python -m pip install dist/oriel_language-0.8.1-py3-none-any.whl
 oriel version
-oriel run examples/hello.orl
-oriel check examples/hello.orl
-oriel new my_project
 ```
 
-## Expected output
+## Test
 
-```text
-Oriel 0.1.0
-Hello AryaLabs
-Welcome to the Oriel Software Language
+```bash
+python -m pip install pytest
+python -m pytest
 ```
+
+## VS Code
+
+Install `dist/oriel-language-support-0.8.1.vsix` using **Extensions -> Install from VSIX**.
+
+## Milestone implementation
+
+See `docs/IMPLEMENTATION_0.8.1.md`.
+# ORIEL 0.8.2
+
+ORIEL 0.8.2 adds a production-oriented, dependency-free QA automation framework. See [QA Automation](docs/QA_AUTOMATION.md) for authoring, execution, reports, coverage, extension adapters, and documented limitations.

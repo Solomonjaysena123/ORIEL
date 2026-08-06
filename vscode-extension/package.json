@@ -1,8 +1,8 @@
 {
   "name": "oriel-language-support",
   "displayName": "Oriel Language Support",
-  "description": "ORIEL 0.7.1 language support: compile bytecode REPL docs doctor benchmark",
-  "version": "0.7.1",
+  "description": "ORIEL 0.8.1: Debugging and performance",
+  "version": "0.8.1",
   "publisher": "aryalabs",
   "engines": {
     "vscode": "^1.85.0"
@@ -15,7 +15,13 @@
     "onStartupFinished",
     "onCommand:oriel.databaseSchema",
     "onCommand:oriel.databaseMigrate",
-    "onCommand:oriel.generateOpenApi"
+    "onCommand:oriel.generateOpenApi",
+    "onCommand:oriel.showTypeInfo",
+    "onCommand:oriel.listStandardLibrary",
+    "onCommand:oriel.resolvePackages",
+    "onCommand:oriel.showLspCapabilities",
+    "onCommand:oriel.compileVm",
+    "onCommand:oriel.profileVm"
   ],
   "main": "./extension.js",
   "contributes": {
@@ -93,6 +99,30 @@
       {
         "command": "oriel.generateOpenApi",
         "title": "Oriel: Generate OpenAPI Document"
+      },
+      {
+        "command": "oriel.showTypeInfo",
+        "title": "ORIEL: Show Type Information"
+      },
+      {
+        "command": "oriel.listStandardLibrary",
+        "title": "ORIEL: List Standard Library"
+      },
+      {
+        "command": "oriel.resolvePackages",
+        "title": "ORIEL: Resolve Packages"
+      },
+      {
+        "command": "oriel.showLspCapabilities",
+        "title": "ORIEL: Show LSP Capabilities"
+      },
+      {
+        "command": "oriel.compileVm",
+        "title": "ORIEL: Compile to VM Bytecode"
+      },
+      {
+        "command": "oriel.profileVm",
+        "title": "ORIEL: Profile VM Bytecode"
       }
     ],
     "menus": {

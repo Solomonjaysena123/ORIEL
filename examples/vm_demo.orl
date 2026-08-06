@@ -1,0 +1,4 @@
+fn main() {
+    let subtotal = 10 * 5
+    print(subtotal + 2)
+}
