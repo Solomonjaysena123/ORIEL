@@ -1,2 +1,3 @@
 [console_scripts]
 oriel = oriel.cli:main
+oriel-qa = oriel.qa.cli:main

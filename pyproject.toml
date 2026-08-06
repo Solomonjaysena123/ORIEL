@@ -5,8 +5,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "oriel-language"
-version = "0.8.1"
-description = "ORIEL 0.8.1 - Debugging and performance"
+version = "0.9.3"
+description = "ORIEL 0.9.3 - Authentication and Security Framework"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
@@ -14,6 +14,7 @@ authors = [{name = "Oriel Language Project"}]
 
 [project.scripts]
 oriel = "oriel.cli:main"
+oriel-qa = "oriel.qa.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

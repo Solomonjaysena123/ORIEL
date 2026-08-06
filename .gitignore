@@ -15,3 +15,8 @@ node_modules/
 *.vsix
 *.whl
 .DS_Store
+qa-reports/
+qa-reports-*/
+.coverage
+.pip-cache-*/
+fresh-install-*/
