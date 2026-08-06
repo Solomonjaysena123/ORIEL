@@ -1,13 +1,13 @@
-# ORIEL 0.8.1
+# ORIEL 0.8.2
 
-**Milestone:** Debugging and performance
+**Milestone:** QA Automation Framework
 
-This ZIP is a standalone development snapshot. It includes source code, automated tests, a Python wheel, and a VS Code extension package. It is not presented as a production-complete language release.
+ORIEL 0.8.2 adds a dependency-free QA automation framework with test discovery, assertions, fixtures, mocks, parameterized and snapshot testing, retries, flaky-test detection, watch mode, parallel execution, coverage, and JUnit XML, HTML, and JSON reports.
 
 ## Install
 
 ```bash
-python -m pip install dist/oriel_language-0.8.1-py3-none-any.whl
+python -m pip install dist/oriel_language-0.8.2-py3-none-any.whl
 oriel version
 ```
 
@@ -20,11 +20,8 @@ python -m pytest
 
 ## VS Code
 
-Install `dist/oriel-language-support-0.8.1.vsix` using **Extensions -> Install from VSIX**.
+Install `dist/oriel-language-support-0.8.2.vsix` using **Extensions -> Install from VSIX**.
 
-## Milestone implementation
+## Documentation
 
-See `docs/IMPLEMENTATION_0.8.1.md`.
-# ORIEL 0.8.2
-
-ORIEL 0.8.2 adds a production-oriented, dependency-free QA automation framework. See [QA Automation](docs/QA_AUTOMATION.md) for authoring, execution, reports, coverage, extension adapters, and documented limitations.
+See [QA Automation](docs/QA_AUTOMATION.md) for authoring, execution, reports, coverage, extension adapters, and documented limitations.

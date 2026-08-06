@@ -1,8 +1,8 @@
 {
   "name": "oriel-language-support",
   "displayName": "Oriel Language Support",
-  "description": "ORIEL 0.8.1: Debugging and performance",
-  "version": "0.8.1",
+  "description": "ORIEL 0.8.2: QA Automation Framework",
+  "version": "0.8.2",
   "publisher": "aryalabs",
   "engines": {
     "vscode": "^1.85.0"
