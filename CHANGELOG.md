@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.2 - API Application Framework
+
+- Added a transport-independent API dispatcher and in-process test client.
+- Added path parameters, query values, JSON request bodies, and structured errors.
+- Added method-not-allowed responses with `Allow` headers.
+- Added OpenAPI 3.1 path-parameter metadata and consistent 0.9.2 defaults.
+- Added a threaded development server sharing the same dispatcher.
+- Retained the v0.9.1 Database Framework, v0.9.0 Shared Application Kernel, QA framework, and SQLite fixes.
+
 ## 0.9.1 - Database Application Framework
 
 - Added deterministic, checksum-based and idempotent schema migrations.
