@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.9.6 - Android Framework
+
+- Added validated Android application configuration, Gradle Kotlin project generation, manifests, resources, Kotlin launcher source, and debug/release build profiles.
+- Added an Android renderer for v0.9.5 component trees with linear, grid, and stack containers, layout metadata, diagnostics, and accessibility mapping.
+- Added lifecycle state enforcement, typed device information and APIs, manifest-aware runtime permissions, and deterministic mock devices.
+- Added notification channels, immediate and scheduled notifications, cancellation, and a memory notification backend.
+- Added constrained background work with scheduling, cancellation, exponential retry backoff, attempt limits, and deterministic runtime conditions.
+- Added store-readiness validation, environment-only signing configuration, embedded-key detection, toolchain detection, APK/AAB build commands, and Android CLI workflows.
+- Preserved the complete v0.9.5 platform, Python 3.10 support, MIT licensing, CI matrix, release packaging, and VS Code distribution.
+
 ## 0.9.5 - Cross-Platform UI Engine
 
 - Added immutable declarative nodes, reusable components, row/column/grid/stack layouts, constraints, spacing, alignment, wrapping, and flex growth.

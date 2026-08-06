@@ -1,8 +1,8 @@
 {
   "name": "oriel-language-support",
   "displayName": "Oriel Language Support",
-  "description": "ORIEL 0.9.5: Cross-Platform UI Engine",
-  "version": "0.9.5",
+  "description": "ORIEL 0.9.6: Android Framework",
+  "version": "0.9.6",
   "publisher": "aryalabs",
   "license": "MIT",
   "repository": {

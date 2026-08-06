@@ -27,6 +27,10 @@ from .vm import Compiler as VMCompiler, VirtualMachine, Program as VMProgram, di
 from .debugger import Debugger, Profiler
 from .web_framework import create_web_project, load_application, serve as serve_web
 from .ui_engine import create_ui_project
+from .android_framework import (
+    AndroidConfig, AndroidPermission, build_android_project,
+    create_android_project, validate_android_project,
+)
 
 HELLO_TEMPLATE = '''// src/main.orl
 
@@ -102,6 +106,25 @@ def build_parser() -> argparse.ArgumentParser:
     ui_new = ui_sub.add_parser("new", help="Create an ORIEL cross-platform UI project.")
     ui_new.add_argument("name")
     ui_new.add_argument("--path", type=Path, default=Path.cwd())
+    android = sub.add_parser("android", help="ORIEL Android framework commands.")
+    android_sub = android.add_subparsers(dest="android_command", required=True)
+    android_new = android_sub.add_parser("new", help="Create a Gradle Android project.")
+    android_new.add_argument("name")
+    android_new.add_argument("--path", type=Path, default=Path.cwd())
+    android_new.add_argument("--application-id", required=True)
+    android_new.add_argument("--version-name", default="0.1.0")
+    android_new.add_argument("--version-code", type=int, default=1)
+    android_new.add_argument("--min-sdk", type=int, default=24)
+    android_new.add_argument("--target-sdk", type=int, default=35)
+    android_new.add_argument("--compile-sdk", type=int, default=35)
+    android_new.add_argument("--permission", action="append", default=[], choices=[item.name.lower() for item in AndroidPermission])
+    android_validate = android_sub.add_parser("validate", help="Validate an Android project.")
+    android_validate.add_argument("path", type=Path, nargs="?", default=Path.cwd())
+    android_validate.add_argument("--store-ready", action="store_true")
+    android_build = android_sub.add_parser("build", help="Build an Android APK or app bundle.")
+    android_build.add_argument("path", type=Path, nargs="?", default=Path.cwd())
+    android_build.add_argument("--bundle", action="store_true")
+    android_build.add_argument("--release", action="store_true")
     db = sub.add_parser("db", help="ORIEL database framework commands.")
     db_sub = db.add_subparsers(dest="db_command", required=True)
     db_new = db_sub.add_parser("new", help="Create an ORIEL database project.")
@@ -395,6 +418,27 @@ def main() -> int:
             if args.ui_command == "new":
                 project = create_ui_project(args.name, args.path)
                 print(f"Created ORIEL UI project: {project}")
+                return 0
+        if args.command == "android":
+            if args.android_command == "new":
+                config=AndroidConfig(
+                    args.application_id,args.name,args.version_name,args.version_code,
+                    args.min_sdk,args.target_sdk,args.compile_sdk,
+                    tuple(AndroidPermission[item.upper()] for item in args.permission),
+                )
+                project=create_android_project(config,args.path)
+                print(f"Created ORIEL Android project: {project}")
+                return 0
+            if args.android_command == "validate":
+                issues=validate_android_project(args.path,store_ready=args.store_ready)
+                if issues:
+                    for issue in issues:print(f"- {issue}",file=sys.stderr)
+                    return 1
+                print(f"Android project validation successful: {args.path}")
+                return 0
+            if args.android_command == "build":
+                artifact=build_android_project(args.path,bundle=args.bundle,release=args.release)
+                print(f"Android build successful: {artifact}")
                 return 0
         if args.command == "db":
             import json
