@@ -1,6 +1,10 @@
 from __future__ import annotations
 from pathlib import Path
-import hashlib, json, shutil, tomllib, re
+import hashlib, json, shutil, re
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10 compatibility
+    import tomli as tomllib
 
 REGISTRY = {
  "oriel.core":{"versions":["0.3.0","0.4.0","0.5.0"],"description":"Core ORIEL utilities","dependencies":{}},
