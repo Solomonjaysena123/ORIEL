@@ -1,18 +1,27 @@
-# ORIEL 0.9.3
+# ORIEL 0.8.1
 
-ORIEL is an experimental software language with a bytecode VM, QA automation, and API, database, web, authentication, and security frameworks.
+**Milestone:** Debugging and performance
 
-Version 0.9.3 adds PBKDF2-SHA256 password hashing, scoped and expiring HMAC-signed tokens, thread-safe sessions, role/permission enforcement, CSRF tokens, rate limiting, and secure web middleware headers.
+This ZIP is a standalone development snapshot. It includes source code, automated tests, a Python wheel, and a VS Code extension package. It is not presented as a production-complete language release.
 
-## Install and test
+## Install
 
 ```bash
-python -m pip install .
-python -m pip install pytest
-python -m pytest
-oriel-qa tests --workers 2 --retries 1 --fail-on-flaky
+python -m pip install dist/oriel_language-0.8.1-py3-none-any.whl
+oriel version
 ```
 
-See [Authentication and Security](docs/SECURITY_FRAMEWORK_0.9.3.md), [Web Framework](docs/WEB_FRAMEWORK_0.9.2.md), [Database Framework](docs/DATABASE_FRAMEWORK_0.9.1.md), and [API Framework](docs/API_FRAMEWORK_0.9.0.md).
+## Test
 
-ORIEL is distributed under the MIT License.
+```bash
+python -m pip install pytest
+python -m pytest
+```
+
+## VS Code
+
+Install `dist/oriel-language-support-0.8.1.vsix` using **Extensions -> Install from VSIX**.
+
+## Milestone implementation
+
+See `docs/IMPLEMENTATION_0.8.1.md`.

@@ -1,5 +1,4 @@
 from __future__ import annotations
-from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -65,14 +64,10 @@ def validate(data: dict[str, Any], rules):
 class Repository:
     def __init__(self, database: Path, entity: Entity):
         self.database, self.entity = database, entity
-    @contextmanager
     def _connect(self):
         con = sqlite3.connect(self.database)
         con.row_factory = sqlite3.Row
-        try:
-            yield con
-        finally:
-            con.close()
+        return con
     def create(self, values):
         allowed = {f.name for f in self.entity.fields if f.type_name != 'Id'}
         data = {k: v for k, v in values.items() if k in allowed}

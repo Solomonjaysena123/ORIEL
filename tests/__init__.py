@@ -1,1 +1,0 @@
-"""ORIEL automated test suite."""

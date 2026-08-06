@@ -12,7 +12,7 @@ from . import package_manager
 from .lsp import run_lsp
 from .modules import load_module_graph
 from .api_framework import create_api_project, serve, route_manifest, openapi_manifest
-from .db_framework import create_database_project, schema_manifest, migrate, inspect_database, migration_history
+from .db_framework import create_database_project, schema_manifest, migrate, inspect_database
 from .application_services import generate_crud, hash_password, verify_password, create_token, verify_token, parse_validators, validate
 from .console_tools import write_bytecode, run_bytecode, generate_docs, doctor, benchmark, repl
 from .typesystem import parse_type, is_assignable
@@ -95,8 +95,6 @@ def build_parser() -> argparse.ArgumentParser:
     db_migrate.add_argument("--database", type=Path, default=Path("data/oriel.db"))
     db_inspect = db_sub.add_parser("inspect", help="Inspect an ORIEL SQLite database.")
     db_inspect.add_argument("database", type=Path, nargs="?", default=Path("data/oriel.db"))
-    db_status = db_sub.add_parser("status", help="Show applied ORIEL migrations.")
-    db_status.add_argument("database", type=Path, nargs="?", default=Path("data/oriel.db"))
     api_openapi = api_sub.add_parser("openapi", help="Generate an OpenAPI 3.1 document.")
     api_openapi.add_argument("file", type=Path, nargs="?", default=Path("src/main.orl"))
     api_openapi.add_argument("--output", type=Path)
@@ -379,9 +377,6 @@ def main() -> int:
                 return 0
             if args.db_command == "inspect":
                 print(json.dumps(inspect_database(args.database), indent=2))
-                return 0
-            if args.db_command == "status":
-                print(json.dumps(migration_history(args.database), indent=2))
                 return 0
     except Exception as error:
         print(error, file=sys.stderr)
