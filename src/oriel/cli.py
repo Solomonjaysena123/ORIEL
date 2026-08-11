@@ -32,6 +32,7 @@ from .android_framework import (
     create_android_project, validate_android_project,
 )
 from .mobile_framework import IOSConfig, UnifiedMobileConfig, build_ios_project, create_ios_project, create_mobile_project, validate_ios_project, validate_mobile_project
+from .desktop_framework import DesktopConfig, DesktopPlatform, build_desktop_project, create_desktop_project, package_desktop_project, validate_desktop_project
 
 HELLO_TEMPLATE = '''// src/main.orl
 
@@ -133,6 +134,11 @@ def build_parser() -> argparse.ArgumentParser:
     mobile=sub.add_parser("mobile",help="Unified Android+iOS projects.");mobile_sub=mobile.add_subparsers(dest="mobile_command",required=True)
     mobile_new=mobile_sub.add_parser("new");mobile_new.add_argument("name");mobile_new.add_argument("--path",type=Path,default=Path.cwd());mobile_new.add_argument("--application-id",required=True);mobile_new.add_argument("--version",default="0.1.0");mobile_new.add_argument("--build-number",type=int,default=1)
     mobile_validate=mobile_sub.add_parser("validate");mobile_validate.add_argument("path",type=Path,nargs="?",default=Path.cwd())
+    desktop=sub.add_parser("desktop",help="ORIEL cross-platform desktop commands.");desktop_sub=desktop.add_subparsers(dest="desktop_command",required=True)
+    desktop_new=desktop_sub.add_parser("new",help="Create a Windows, macOS, and Linux desktop project.");desktop_new.add_argument("name");desktop_new.add_argument("--path",type=Path,default=Path.cwd());desktop_new.add_argument("--application-id",required=True);desktop_new.add_argument("--version",default="0.1.0");desktop_new.add_argument("--description",default="ORIEL desktop application");desktop_new.add_argument("--publisher",default="ORIEL");desktop_new.add_argument("--platform",action="append",choices=[item.value for item in DesktopPlatform])
+    desktop_validate=desktop_sub.add_parser("validate",help="Validate a desktop project.");desktop_validate.add_argument("path",type=Path,nargs="?",default=Path.cwd());desktop_validate.add_argument("--release",action="store_true");desktop_validate.add_argument("--target",choices=[item.value for item in DesktopPlatform])
+    desktop_build=desktop_sub.add_parser("build",help="Build on the current native platform.");desktop_build.add_argument("path",type=Path,nargs="?",default=Path.cwd());desktop_build.add_argument("--release",action="store_true");desktop_build.add_argument("--target",choices=[item.value for item in DesktopPlatform])
+    desktop_package=desktop_sub.add_parser("package",help="Create a deterministic desktop staging package.");desktop_package.add_argument("path",type=Path,nargs="?",default=Path.cwd());desktop_package.add_argument("--release",action="store_true");desktop_package.add_argument("--target",choices=[item.value for item in DesktopPlatform])
     db = sub.add_parser("db", help="ORIEL database framework commands.")
     db_sub = db.add_subparsers(dest="db_command", required=True)
     db_new = db_sub.add_parser("new", help="Create an ORIEL database project.")
@@ -467,6 +473,20 @@ def main() -> int:
                 for issue in issues:print(f"- {issue}",file=sys.stderr)
                 return 1
             print(f"Mobile project validation successful: {args.path}");return 0
+        if args.command=="desktop":
+            if args.desktop_command=="new":
+                platforms=tuple(DesktopPlatform(item) for item in args.platform) if args.platform else tuple(DesktopPlatform)
+                config=DesktopConfig(args.application_id,args.name,args.version,args.description,args.publisher,platforms)
+                print(f"Created ORIEL desktop project: {create_desktop_project(config,args.path)}");return 0
+            target=DesktopPlatform(args.target) if args.target else None
+            if args.desktop_command=="validate":
+                issues=validate_desktop_project(args.path,release=args.release,target=target)
+                if issues:
+                    for issue in issues:print(f"- {issue}",file=sys.stderr)
+                    return 1
+                print(f"Desktop project validation successful: {args.path}");return 0
+            if args.desktop_command=="build": print(f"Desktop build successful: {build_desktop_project(args.path,target=target,release=args.release)}");return 0
+            print(f"Desktop package successful: {package_desktop_project(args.path,target=target,release=args.release)}");return 0
         if args.command == "db":
             import json
             if args.db_command == "new":

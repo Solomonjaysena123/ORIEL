@@ -1,8 +1,8 @@
 {
   "name": "oriel-language-support",
   "displayName": "Oriel Language Support",
-  "description": "ORIEL 0.9.7: iOS and Unified Mobile Packaging",
-  "version": "0.9.7",
+  "description": "ORIEL 0.9.8: Cross-Platform Desktop Framework",
+  "version": "0.9.8",
   "publisher": "aryalabs",
   "license": "MIT",
   "repository": {

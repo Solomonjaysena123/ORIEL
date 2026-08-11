@@ -1,3 +1,3 @@
-# desktop
+# ORIEL Desktop Framework
 
-Reserved package area for the ORIEL open-source architecture. Implementation will be added after the console language is stabilized.
+The v0.9.8 desktop framework provides cross-platform application contracts and project tooling for Windows, macOS, and Linux. See [the desktop framework guide](../../docs/DESKTOP_FRAMEWORK_0.9.8.md) for APIs, CLI commands, packaging, signing requirements, and current platform gaps.

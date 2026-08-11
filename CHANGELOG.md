@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.8 - Cross-Platform Desktop Framework
+
+- Added Windows, macOS, and Linux desktop project generation, validation, and native executable builds.
+- Added window, menu, shortcut, tray, file-dialog, clipboard, notification, safe-link, update, and native interoperability contracts.
+- Added shared UI rendering, deterministic staging packages, SHA-256 checksums, signing-material checks, CLI commands, documentation, and multi-platform CI.
+
 ## 0.9.7 - iOS and Unified Mobile Packaging
 
 - Added iOS/iPadOS configuration, UIKit rendering contracts, lifecycle/device APIs, permissions, signing validation, XcodeGen projects, and Xcode build/archive commands.
