@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "ORIEL IDE",
+  "version": "0.3.0-alpha.1",
+  "identifier": "com.oriel.ide",
+  "build": {"frontendDist": "../web"},
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [{"title":"ORIEL IDE","width":1440,"height":900,"minWidth":1000,"minHeight":650,"resizable":true}],
+    "security": {"csp": null}
+  },
+  "bundle": {"active":true,"targets":["nsis"],"icon":["icons/icon.ico"]}
+}

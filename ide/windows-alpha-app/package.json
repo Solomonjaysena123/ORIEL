@@ -1,0 +1,7 @@
+{
+  "name": "oriel-ide-windows-alpha",
+  "private": true,
+  "version": "0.3.0-alpha.1",
+  "scripts": {"tauri": "tauri"},
+  "devDependencies": {"@tauri-apps/cli": "^2.8.0"}
+}
